@@ -1,7 +1,6 @@
 package com.vaankdeals.newsapp.Adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int UNIFIED_NATIVE_AD_VIEW_TYPE = 1;
     private static final int FULL_IMAGE_TYPE = 2;
     private static final int WEBVIEW_TYPE = 3;
+    private static final int CUSTOM_AD_TYPE = 4;
 
 
     public NewsAdapter(Context context, List<Object> mNewsList) {
@@ -57,6 +57,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case WEBVIEW_TYPE:
                 View webView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.webview_item, viewGroup, false);
                 return new WebViewViewHolder(webView);
+
+            case CUSTOM_AD_TYPE:
+                View customAd = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.customad, viewGroup, false);
+                return new CustomAdViewHolder(customAd);
 
             case FULL_IMAGE_TYPE:
                 View imageView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fullphotoitem, viewGroup, false);
@@ -84,6 +88,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     return FULL_IMAGE_TYPE;
                 case "3":
                     return WEBVIEW_TYPE;
+                case "4":
+                    return CUSTOM_AD_TYPE;
                 default:
                     return -1;
             }
@@ -128,6 +134,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 webViewViewHolder.mWebView.loadUrl(web_url);
 
 
+                break;
+            case CUSTOM_AD_TYPE:
+                NewsModel customad = (NewsModel) mNewsList.get(position);
+                CustomAdViewHolder customAdViewHolder = (CustomAdViewHolder) holder;
+
+                String customadimage = customad.getmNewsImage();
+                Glide.with(mContext).load(customadimage).into(customAdViewHolder.mNewsImage);
                 break;
             case FULL_IMAGE_TYPE:
                 NewsModel image = (NewsModel) mNewsList.get(position);
@@ -184,6 +197,16 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mNewsExtra = itemView.findViewById(R.id.news_extra);
     }
 }
+    public class CustomAdViewHolder extends RecyclerView.ViewHolder{
+
+        public ImageView mNewsImage;
+
+        public CustomAdViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mNewsImage = itemView.findViewById(R.id.customadimage);
+        }
+    }
     public class FullImageViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView mNewsImage;
