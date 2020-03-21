@@ -1,11 +1,16 @@
 package com.vaankdeals.newsapp.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -30,12 +35,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int NEWS_IMAGE_TYPE = 0;
     private static final int UNIFIED_NATIVE_AD_VIEW_TYPE = 1;
     private static final int FULL_IMAGE_TYPE = 2;
+    private static final int WEBVIEW_TYPE = 3;
 
 
     public NewsAdapter(Context context, List<Object> mNewsList) {
         this.mNewsList = mNewsList;
         this.mContext = context;
     }
+
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -45,6 +53,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         viewGroup.getContext()).inflate(R.layout.ad_unified_news,
                         viewGroup, false);
                 return new UnifiedNativeAdViewHolder(unifiedNativeLayoutView);
+
+            case WEBVIEW_TYPE:
+                View webView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.webview_item, viewGroup, false);
+                return new WebViewViewHolder(webView);
 
             case FULL_IMAGE_TYPE:
                 View imageView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fullphotoitem, viewGroup, false);
@@ -70,6 +82,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     return NEWS_IMAGE_TYPE;
                 case "2":
                     return FULL_IMAGE_TYPE;
+                case "3":
+                    return WEBVIEW_TYPE;
                 default:
                     return -1;
             }
@@ -89,6 +103,32 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 populateNativeAdView(nativeAd, ((UnifiedNativeAdViewHolder) holder).getAdView());
                 break;
 
+            case WEBVIEW_TYPE:
+                NewsModel webview = (NewsModel) mNewsList.get(position);
+                final WebViewViewHolder webViewViewHolder = (WebViewViewHolder) holder;
+
+
+                String web_url = webview.getmNewslink();
+
+
+                webViewViewHolder.mWebView.setWebViewClient(new WebViewClient(){
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                        view.loadUrl(request.toString());
+                        return true;
+                    }
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        webViewViewHolder.mProgress.setVisibility(View.GONE);
+                    }
+                });
+
+                webViewViewHolder.mWebView.getSettings().setJavaScriptEnabled(true);
+                webViewViewHolder.mWebView.loadUrl(web_url);
+
+
+                break;
             case FULL_IMAGE_TYPE:
                 NewsModel image = (NewsModel) mNewsList.get(position);
                 FullImageViewHolder fullImageViewHolder = (FullImageViewHolder) holder;
@@ -113,6 +153,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Glide.with(mContext).load(news_image).into(newsViewHolder.mNewsImage);
                 break;
 
+        }
+    }
+    public class WebViewViewHolder extends RecyclerView.ViewHolder{
+
+        public WebView mWebView;
+        private ProgressBar mProgress;
+
+        public WebViewViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mWebView = itemView.findViewById(R.id.webview_item);
+            mProgress = itemView.findViewById(R.id.progressBar);
         }
     }
 
@@ -146,6 +198,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         return mNewsList.size();
     }
+
+
 
     private void populateNativeAdView (UnifiedNativeAd nativeAd,
                                        UnifiedNativeAdView adView){

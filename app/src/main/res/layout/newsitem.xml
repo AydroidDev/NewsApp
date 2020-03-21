@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/news_desc"
-                android:fontFamily="@font/robotlight"
+                android:fontFamily="@font/robotlight                          "
                 android:lineSpacingExtra="4dp"
                 android:maxLines="9"
                 android:textColor="#616161"
