@@ -1,6 +1,7 @@
 package com.vaankdeals.newsapp.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,7 @@ import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
@@ -166,7 +168,12 @@ public class NewsFragment extends Fragment {
         mRequestQueue.add(request);
     }
 
-
+    public void activityVideo(int position) {
+        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
+        Intent detailintent = new Intent(getContext(), VideoActivity.class);
+        detailintent.putExtra("yt_url", clickeditem.getmNewsVideo());
+        startActivity(detailintent);
+    }
     }
 
 

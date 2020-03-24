@@ -37,18 +37,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int WEBVIEW_TYPE = 3;
     private static final int CUSTOM_AD_TYPE = 4;
     private static final int VIDEO_NEWS_TYPE = 5;
-    private static final int MENU_ITEM_VIEW_TYPE = 0;
     private onItemClickListener mBookmarkListener;
     private onItemClickListener mAllShareListener;
     private onItemClickListener mWhatsListener;
-    private onItemClickListener mNewsListener;
-    private onItemClickListener mPhotoListener;
+    private onItemClickListener mNewsOutListener;
+    private onItemClickListener mPhotoOutListener;
+    private onItemClickListener mVideoClickListener;
 
     public interface onItemClickListener{
-        void onItemClick(int position);
+        void videoActivity(int position);
     }
     public void setOnItemClickListener(onItemClickListener listener){
-        mBookmarkListener = listener;
+        mVideoClickListener = listener;
     }
 
 
@@ -249,7 +249,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mNewsVideoDesc = itemView.findViewById(R.id.news_video_desc);
             mNewsVideoImage = itemView.findViewById(R.id.news_video_image);
             mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
+
+            mNewsVideoImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        mVideoClickListener.videoActivity(position);
+                    }
+                }
+            });
         }
+
     }
     public class CustomAdViewHolder extends RecyclerView.ViewHolder{
 
