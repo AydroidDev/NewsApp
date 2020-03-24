@@ -34,9 +34,6 @@ public class VideoActivity extends YouTubeBaseActivity {
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         String mUrl = bundle.getString("yt_url");
-        String mTitle = bundle.getString("yt_title");
-        TextView video_title = findViewById(R.id.video_title);
-        video_title.setText(mTitle);
         final YouTubePlayerView youtubePlayerView = findViewById(R.id.youtubePlayerView);
         playVideo(mUrl,youtubePlayerView);
     }

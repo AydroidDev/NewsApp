@@ -40,7 +40,7 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements NewsAdapter.onItemClickListener{
 
     ViewPager2 newsViewpager;
     NewsAdapter newsAdapter;
@@ -65,6 +65,7 @@ public class NewsFragment extends Fragment {
         MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
         newsViewpager = rootView.findViewById(R.id.news_swipe);
         newsAdapter = new NewsAdapter(getContext(),mNewsList);
+        newsAdapter.setOnItemClickListener(NewsFragment.this);
         newsViewpager.setAdapter(newsAdapter);
         parseJson();
         loadNativeAds();
@@ -168,12 +169,15 @@ public class NewsFragment extends Fragment {
         mRequestQueue.add(request);
     }
 
-    public void activityVideo(int position) {
+
+
+    @Override
+    public void videoActivity(int position) {
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
         Intent detailintent = new Intent(getContext(), VideoActivity.class);
         detailintent.putExtra("yt_url", clickeditem.getmNewsVideo());
         startActivity(detailintent);
     }
-    }
+}
 
 
