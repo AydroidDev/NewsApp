@@ -30,8 +30,9 @@
                 android:scaleType="centerCrop"
                 android:id="@+id/news_video_image"/>
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:id="@+id/video_play"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:src="@drawable/ic_play_circle_filled_black_24dp"
         android:layout_gravity="center"
         android:contentDescription="TODO" />
