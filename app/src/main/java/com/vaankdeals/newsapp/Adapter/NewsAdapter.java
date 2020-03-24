@@ -36,6 +36,21 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int FULL_IMAGE_TYPE = 2;
     private static final int WEBVIEW_TYPE = 3;
     private static final int CUSTOM_AD_TYPE = 4;
+    private static final int VIDEO_NEWS_TYPE = 5;
+    private static final int MENU_ITEM_VIEW_TYPE = 0;
+    private onItemClickListener mBookmarkListener;
+    private onItemClickListener mAllShareListener;
+    private onItemClickListener mWhatsListener;
+    private onItemClickListener mNewsListener;
+    private onItemClickListener mPhotoListener;
+
+    public interface onItemClickListener{
+        void onItemClick(int position);
+    }
+    public void setOnItemClickListener(onItemClickListener listener){
+        mBookmarkListener = listener;
+    }
+
 
 
     public NewsAdapter(Context context, List<Object> mNewsList) {
@@ -48,12 +63,21 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         switch (viewType) {
+            case NEWS_IMAGE_TYPE:
+                View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.newsitem, viewGroup, false);
+// set the view's size, margins, paddings and layout parameters
+                return new NewsViewHolder(v);
             case UNIFIED_NATIVE_AD_VIEW_TYPE:
                 View unifiedNativeLayoutView = LayoutInflater.from(
                         viewGroup.getContext()).inflate(R.layout.ad_unified_news,
                         viewGroup, false);
                 return new UnifiedNativeAdViewHolder(unifiedNativeLayoutView);
-
+            case FULL_IMAGE_TYPE:
+                View imageView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fullphotoitem, viewGroup, false);
+                return new FullImageViewHolder(imageView);
+            case VIDEO_NEWS_TYPE:
+                View videoView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.newsvideoitem, viewGroup, false);
+                return new NewsVideoViewHolder(videoView);
             case WEBVIEW_TYPE:
                 View webView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.webview_item, viewGroup, false);
                 return new WebViewViewHolder(webView);
@@ -62,13 +86,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 View customAd = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.customad, viewGroup, false);
                 return new CustomAdViewHolder(customAd);
 
-            case FULL_IMAGE_TYPE:
-                View imageView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fullphotoitem, viewGroup, false);
-                return new FullImageViewHolder(imageView);
-            case NEWS_IMAGE_TYPE:
-                View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.newsitem, viewGroup, false);
-// set the view's size, margins, paddings and layout parameters
-                return new NewsViewHolder(v);
+
+
 
         }
         return null;
@@ -90,6 +109,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     return WEBVIEW_TYPE;
                 case "4":
                     return CUSTOM_AD_TYPE;
+                case "5":
+                    return VIDEO_NEWS_TYPE;
                 default:
                     return -1;
             }
@@ -166,6 +187,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Glide.with(mContext).load(news_image).into(newsViewHolder.mNewsImage);
                 break;
 
+            case VIDEO_NEWS_TYPE:
+                NewsModel video_news = (NewsModel) mNewsList.get(position);
+                NewsVideoViewHolder newsVideoViewHolder = (NewsVideoViewHolder) holder;
+
+                String news_head_video = video_news.getmNewsHead();
+                String news_desc_video = video_news.getmNewsDesc();
+                String news_image_video = video_news.getmNewsImage();
+                String news_source_video = video_news.getmNewsSource();
+                String news_day_video = video_news.getmNewsDay();
+                String news_extra_video = "click on title to read more on " + news_source_video + " / " + news_day_video;
+
+                newsVideoViewHolder.mNewsVideoExtra.setText(news_extra_video);
+                newsVideoViewHolder.mNewsVideoHead.setText(news_head_video);
+                newsVideoViewHolder.mNewsVideoDesc.setText(news_desc_video);
+                Glide.with(mContext).load(news_image_video).into(newsVideoViewHolder.mNewsVideoImage);
+                break;
+
         }
     }
     public class WebViewViewHolder extends RecyclerView.ViewHolder{
@@ -197,6 +235,22 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mNewsExtra = itemView.findViewById(R.id.news_extra);
     }
 }
+    public class NewsVideoViewHolder extends RecyclerView.ViewHolder{
+
+        public TextView mNewsVideoHead;
+        public TextView mNewsVideoDesc;
+        public ImageView mNewsVideoImage;
+        public TextView mNewsVideoExtra;
+
+        public NewsVideoViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mNewsVideoHead = itemView.findViewById(R.id.news_video_head);
+            mNewsVideoDesc = itemView.findViewById(R.id.news_video_desc);
+            mNewsVideoImage = itemView.findViewById(R.id.news_video_image);
+            mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
+        }
+    }
     public class CustomAdViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView mNewsImage;

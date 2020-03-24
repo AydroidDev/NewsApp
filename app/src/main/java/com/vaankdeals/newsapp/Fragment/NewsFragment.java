@@ -146,7 +146,9 @@ public class NewsFragment extends Fragment {
                                 String news_id = ser.getString("news_id");
                                 String news_link = ser.getString("news_link");
                                 String news_type = ser.getString("news_type");
-                                mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type));
+                                String news_video = ser.getString("news_video");
+
+                                mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video));
                             }
                             // Just call notifyDataSetChanged here
 
