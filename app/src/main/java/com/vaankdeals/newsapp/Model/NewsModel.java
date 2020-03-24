@@ -9,8 +9,9 @@ public class NewsModel {
     private String mNewsId;
     private String mNewslink;
     private String mNewsType;
+    private String mNewsVideo;
 
-    public NewsModel(String newshead, String newsdesc , String newsimage, String newssource, String newsday, String newsid , String newslink,String newstype){
+    public NewsModel(String newshead, String newsdesc , String newsimage, String newssource, String newsday, String newsid , String newslink,String newstype,String newsvideo){
     mNewsHead = newshead;
     mNewsDesc = newsdesc;
     mNewsImage = newsimage;
@@ -19,6 +20,7 @@ public class NewsModel {
     mNewsId = newsid;
     mNewslink = newslink;
     mNewsType = newstype;
+    mNewsVideo = newsvideo;
 }
 
 public String getmNewsType(){
@@ -48,6 +50,9 @@ public String getmNewsType(){
 
     public String getmNewslink() {
         return mNewslink;
+    }
+    public String getmNewsVideo() {
+        return mNewsVideo;
     }
 
 }
