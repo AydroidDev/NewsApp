@@ -15,6 +15,9 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.R;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class VideoActivity extends YouTubeBaseActivity {
     private YouTubePlayer youTubePlayer;
@@ -34,10 +37,20 @@ public class VideoActivity extends YouTubeBaseActivity {
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         String mUrl = bundle.getString("yt_url");
+        String vId =getVideoIdFromYoutubeUrl(mUrl);
         final YouTubePlayerView youtubePlayerView = findViewById(R.id.youtubePlayerView);
-        playVideo(mUrl,youtubePlayerView);
+        playVideo(vId,youtubePlayerView);
     }
-
+    public String getVideoIdFromYoutubeUrl(String url){
+        String videoId = null;
+        String regex = "http(?:s)?:\\/\\/(?:m.)?(?:www\\.)?youtu(?:\\.be\\/|be\\.com\\/(?:watch\\?(?:feature=youtu.be\\&)?v=|v\\/|embed\\/|user\\/(?:[\\w#]+\\/)+))([^&#?\\n]+)";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(url);
+        if(matcher.find()){
+            videoId = matcher.group(1);
+        }
+        return videoId;
+    }
     private void playVideo(final String videoId, YouTubePlayerView youTubePlayerView) {
         //initialize youtube player view
         youTubePlayerView.initialize("AIzaSyBw3nazuqRNMy2t3RzGGCnQJOSQ7vChBn0",

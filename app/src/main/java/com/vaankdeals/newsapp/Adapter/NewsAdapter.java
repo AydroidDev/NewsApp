@@ -241,6 +241,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public TextView mNewsVideoDesc;
         public ImageView mNewsVideoImage;
         public TextView mNewsVideoExtra;
+        public ImageView mNewsVideoPlay;
 
         public NewsVideoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -249,8 +250,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mNewsVideoDesc = itemView.findViewById(R.id.news_video_desc);
             mNewsVideoImage = itemView.findViewById(R.id.news_video_image);
             mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
+            mNewsVideoPlay = itemView.findViewById(R.id.video_play);
 
-            mNewsVideoImage.setOnClickListener(new View.OnClickListener() {
+            mNewsVideoPlay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
