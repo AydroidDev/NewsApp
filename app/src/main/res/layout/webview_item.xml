@@ -4,16 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000">
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="2dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="5dp"
-        app:cardElevation="0dp"
-        android:layout_marginEnd="2dp"
-        app:cardCornerRadius="12dp">
+    android:background="#fff">
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:max="3"
@@ -23,7 +15,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:progressDrawable="@drawable/progress_background"
+
         />
     <WebView
         android:id="@+id/webview_item"
@@ -31,6 +23,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/progressBar"
         />
-    </androidx.cardview.widget.CardView>
+
 
 </RelativeLayout>
