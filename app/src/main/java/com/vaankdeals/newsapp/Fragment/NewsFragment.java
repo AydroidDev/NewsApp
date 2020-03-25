@@ -1,11 +1,13 @@
 package com.vaankdeals.newsapp.Fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
+import spencerstudios.com.bungeelib.Bungee;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.vaankdeals.newsapp.Activity.ExoActivity;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Model.NewsModel;
@@ -41,6 +44,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onItemClickLis
 
     ViewPager2 newsViewpager;
     NewsAdapter newsAdapter;
+    Context context;
     private static final int NUMBER_OF_ADS = 1;
     private final List<UnifiedNativeAd> mNativeAds = new ArrayList<>();
     private RequestQueue mRequestQueue;
@@ -171,9 +175,31 @@ public class NewsFragment extends Fragment implements NewsAdapter.onItemClickLis
     @Override
     public void videoActivity(int position) {
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
+        String url = clickeditem.getmNewsVideo();
+        String pattern = "^(http(s)?:\\/\\/)?((w){3}.)?youtu(be|.be)?(\\.com)?\\/.+";
+        if (!url.isEmpty() && url.matches(pattern))
+        {
+            youtubeActivity(position);
+        }
+        else
+        {
+            // Not Valid youtube URL
+            exoPlayerActivity(position);
+        }
+    }
+    private void youtubeActivity(int position){
+        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
         Intent detailintent = new Intent(getContext(), VideoActivity.class);
         detailintent.putExtra("yt_url", clickeditem.getmNewsVideo());
         startActivity(detailintent);
+        Bungee.shrink(getContext());
+    }
+    public void exoPlayerActivity(int position){
+        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
+        Intent exoIntent = new Intent(getContext(), ExoActivity.class);
+        exoIntent.putExtra("st_url", clickeditem.getmNewsVideo());
+        startActivity(exoIntent);
+        Bungee.shrink(getContext());
     }
 }
 

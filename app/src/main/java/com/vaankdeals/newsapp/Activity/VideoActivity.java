@@ -60,7 +60,6 @@ public class VideoActivity extends YouTubeBaseActivity {
                                                         YouTubePlayer player, boolean b) {
                         youTubePlayer = player;
                         youTubePlayer.loadVideo(videoId);
-
                         youTubePlayer.setShowFullscreenButton(true);
                         player.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
                             @Override

@@ -18,6 +18,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".Activity.ExoActivity"
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
+        <activity
             android:name=".Activity.VideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
