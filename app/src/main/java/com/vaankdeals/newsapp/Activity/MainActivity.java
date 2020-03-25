@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.viewTab);
 
+        getSupportActionBar().hide();
         menuFragment = new MenuFragment();
         newsFragment = new NewsFragment();
 

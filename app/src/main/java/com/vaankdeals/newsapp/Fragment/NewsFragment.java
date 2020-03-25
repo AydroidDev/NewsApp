@@ -26,6 +26,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.vaankdeals.newsapp.Activity.ExoActivity;
+import com.vaankdeals.newsapp.Activity.NewsActivity;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Model.NewsModel;
@@ -40,11 +41,10 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class NewsFragment extends Fragment implements NewsAdapter.onItemClickListener{
+public class NewsFragment extends Fragment implements NewsAdapter.videoClickListener,NewsAdapter.newsOutListener{
 
     ViewPager2 newsViewpager;
     NewsAdapter newsAdapter;
-    Context context;
     private static final int NUMBER_OF_ADS = 1;
     private final List<UnifiedNativeAd> mNativeAds = new ArrayList<>();
     private RequestQueue mRequestQueue;
@@ -66,10 +66,12 @@ public class NewsFragment extends Fragment implements NewsAdapter.onItemClickLis
         MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
         newsViewpager = rootView.findViewById(R.id.news_swipe);
         newsAdapter = new NewsAdapter(getContext(),mNewsList);
-        newsAdapter.setOnItemClickListener(NewsFragment.this);
+        newsAdapter.setvideoClickListener(NewsFragment.this);
+        newsAdapter.setnewsOutListener(NewsFragment.this);
         newsViewpager.setAdapter(newsAdapter);
         parseJson();
         loadNativeAds();
+
         return rootView;
     }
 
@@ -194,12 +196,20 @@ public class NewsFragment extends Fragment implements NewsAdapter.onItemClickLis
         startActivity(detailintent);
         Bungee.shrink(getContext());
     }
-    public void exoPlayerActivity(int position){
+    private void exoPlayerActivity(int position){
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
         Intent exoIntent = new Intent(getContext(), ExoActivity.class);
         exoIntent.putExtra("st_url", clickeditem.getmNewsVideo());
         startActivity(exoIntent);
         Bungee.shrink(getContext());
+    }
+    public void newsDetailActivity(int position){
+        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
+        Intent newsIntent = new Intent(getContext(), NewsActivity.class);
+        newsIntent.putExtra("ns_url", clickeditem.getmNewslink());
+        newsIntent.putExtra("ns_title", clickeditem.getmNewsHead());
+        startActivity(newsIntent);
+        Bungee.zoom(getContext());
     }
 }
 

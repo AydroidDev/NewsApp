@@ -1,6 +1,7 @@
 package com.vaankdeals.newsapp.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,19 +38,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int WEBVIEW_TYPE = 3;
     private static final int CUSTOM_AD_TYPE = 4;
     private static final int VIDEO_NEWS_TYPE = 5;
-    private onItemClickListener mBookmarkListener;
-    private onItemClickListener mAllShareListener;
-    private onItemClickListener mWhatsListener;
-    private onItemClickListener mNewsOutListener;
-    private onItemClickListener mPhotoOutListener;
-    private onItemClickListener mVideoClickListener;
 
-    public interface onItemClickListener{
+    private newsOutListener mNewsOutListener;
+    private videoClickListener mVideoClickListener;
+
+    public interface videoClickListener{
         void videoActivity(int position);
     }
-    public void setOnItemClickListener(onItemClickListener listener){
+    public void setvideoClickListener(videoClickListener listener){
         mVideoClickListener = listener;
     }
+    public interface newsOutListener{
+        void newsDetailActivity(int position);
+    }
+    public void setnewsOutListener(newsOutListener listener){
+        mNewsOutListener = listener;
+    }
+
 
 
 
@@ -219,7 +224,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public class NewsViewHolder extends RecyclerView.ViewHolder{
+    public class NewsViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mNewsHead;
         public TextView mNewsDesc;
@@ -227,14 +232,19 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public TextView mNewsExtra;
 
         public NewsViewHolder(@NonNull View itemView) {
-        super(itemView);
+            super(itemView);
 
-        mNewsHead = itemView.findViewById(R.id.news_head);
-        mNewsDesc = itemView.findViewById(R.id.news_desc);
-        mNewsImage = itemView.findViewById(R.id.news_image);
-        mNewsExtra = itemView.findViewById(R.id.news_extra);
+            mNewsHead = itemView.findViewById(R.id.news_head);
+            mNewsDesc = itemView.findViewById(R.id.news_desc);
+            mNewsImage = itemView.findViewById(R.id.news_image);
+            mNewsExtra = itemView.findViewById(R.id.news_extra);
+            mNewsHead.setOnClickListener(v -> {
+                mNewsOutListener.newsDetailActivity(getAdapterPosition());
+                mNewsHead.setTextColor(Color.parseColor("#ffa500"));
+            });
+
+        }
     }
-}
     public class NewsVideoViewHolder extends RecyclerView.ViewHolder{
 
         public TextView mNewsVideoHead;
@@ -252,14 +262,16 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
             mNewsVideoPlay = itemView.findViewById(R.id.video_play);
 
-            mNewsVideoPlay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        mVideoClickListener.videoActivity(position);
-                    }
+            mNewsVideoPlay.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mVideoClickListener.videoActivity(position);
+
                 }
+            });
+            mNewsVideoHead.setOnClickListener(v -> {
+                mNewsOutListener.newsDetailActivity(getAdapterPosition());
+                mNewsVideoHead.setTextColor(Color.parseColor("#ffa500"));
             });
         }
 
