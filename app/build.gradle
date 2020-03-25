@@ -46,4 +46,5 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.10.5'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.5'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
 }
