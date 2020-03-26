@@ -3,6 +3,7 @@ package com.vaankdeals.newsapp.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,10 +43,9 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class NewsFragment extends Fragment implements NewsAdapter.videoClickListener,NewsAdapter.newsOutListener{
+public class NewsFragment extends Fragment implements NewsAdapter.videoClickListener,NewsAdapter.newsOutListener,NewsAdapter.whatsClickListener,NewsAdapter.shareClickListener,NewsAdapter.adClickListener,NewsAdapter.bookmarkListener{
 
-    ViewPager2 newsViewpager;
-    NewsAdapter newsAdapter;
+    private NewsAdapter newsAdapter;
     private static final int NUMBER_OF_ADS = 1;
     private final List<UnifiedNativeAd> mNativeAds = new ArrayList<>();
     private RequestQueue mRequestQueue;
@@ -64,10 +65,14 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
         mRequestQueue = Volley.newRequestQueue((getActivity()));
 
         MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
-        newsViewpager = rootView.findViewById(R.id.news_swipe);
+        ViewPager2 newsViewpager = rootView.findViewById(R.id.news_swipe);
         newsAdapter = new NewsAdapter(getContext(),mNewsList);
         newsAdapter.setvideoClickListener(NewsFragment.this);
         newsAdapter.setnewsOutListener(NewsFragment.this);
+        newsAdapter.setshareClickListener(NewsFragment.this);
+        newsAdapter.setwhatsClickListener(NewsFragment.this);
+        newsAdapter.setadClickListener(NewsFragment.this);
+        newsAdapter.setbookmarkListener(NewsFragment.this);
         newsViewpager.setAdapter(newsAdapter);
         parseJson();
         loadNativeAds();
@@ -210,6 +215,22 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
         newsIntent.putExtra("ns_title", clickeditem.getmNewsHead());
         startActivity(newsIntent);
         Bungee.zoom(getContext());
+    }
+    public void shareNormal(int position){
+        Toast.makeText(getContext(),"Share Normal",Toast.LENGTH_SHORT).show();
+    }
+    public void shareWhats(int position){
+        Toast.makeText(getContext(),"Share Whatsapp",Toast.LENGTH_SHORT).show();
+    }
+    public void customAdLink(int position){
+
+        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickeditem.getmNewslink()));
+        startActivity(browserIntent);
+    }
+    public void bookmarkAll(int position){
+        Toast.makeText(getContext(),"Bookmark Button",Toast.LENGTH_SHORT).show();
+
     }
 }
 

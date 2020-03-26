@@ -41,7 +41,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private newsOutListener mNewsOutListener;
     private videoClickListener mVideoClickListener;
-
+    private shareClickListener mShareClickListener;
+    private whatsClickListener mWhatsClickListener;
+    private adClickListener mAdClickListener;
+    private bookmarkListener mBookmarkListener;
     public interface videoClickListener{
         void videoActivity(int position);
     }
@@ -55,8 +58,32 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mNewsOutListener = listener;
     }
 
+    public interface shareClickListener{
+        void shareNormal(int position);
+    }
+    public void setshareClickListener(shareClickListener listener){
+        mShareClickListener = listener;
+    }
+    public interface whatsClickListener{
+        void shareWhats(int position);
+    }
+    public void setwhatsClickListener(whatsClickListener listener){
+        mWhatsClickListener = listener;
+    }
 
+    public interface adClickListener{
+        void customAdLink(int position);
+    }
+    public void setadClickListener(adClickListener listener){
+        mAdClickListener = listener;
+    }
 
+    public interface bookmarkListener{
+        void bookmarkAll(int position);
+    }
+    public void setbookmarkListener(bookmarkListener listener){
+        mBookmarkListener = listener;
+    }
 
     public NewsAdapter(Context context, List<Object> mNewsList) {
         this.mNewsList = mNewsList;
@@ -226,32 +253,63 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public class NewsViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mNewsHead;
-        public TextView mNewsDesc;
-        public ImageView mNewsImage;
-        public TextView mNewsExtra;
+        TextView mNewsHead;
+        TextView mNewsDesc;
+        ImageView mNewsImage;
+        TextView mNewsExtra;
+        Button mShareButton;
+        Button mWhatsButton;
+        Button mBookmarkButton;
 
-        public NewsViewHolder(@NonNull View itemView) {
+        NewsViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mNewsHead = itemView.findViewById(R.id.news_head);
             mNewsDesc = itemView.findViewById(R.id.news_desc);
             mNewsImage = itemView.findViewById(R.id.news_image);
             mNewsExtra = itemView.findViewById(R.id.news_extra);
+            mShareButton = itemView.findViewById(R.id.sharecard);
+            mWhatsButton = itemView.findViewById(R.id.sharewhats);
+            mBookmarkButton = itemView.findViewById(R.id.bookmark_button);
+
             mNewsHead.setOnClickListener(v -> {
                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
                 mNewsHead.setTextColor(Color.parseColor("#ffa500"));
             });
 
+            mShareButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mShareClickListener.shareNormal(position);
+
+                }
+            });
+            mWhatsButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mWhatsClickListener.shareWhats(position);
+
+                }
+            });
+            mBookmarkButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mBookmarkListener.bookmarkAll(position);
+
+                }
+            });
         }
     }
     public class NewsVideoViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView mNewsVideoHead;
-        public TextView mNewsVideoDesc;
-        public ImageView mNewsVideoImage;
-        public TextView mNewsVideoExtra;
-        public ImageView mNewsVideoPlay;
+        TextView mNewsVideoHead;
+        TextView mNewsVideoDesc;
+        ImageView mNewsVideoImage;
+        TextView mNewsVideoExtra;
+        ImageView mNewsVideoPlay;
+        private Button mShareButton;
+        private Button mWhatsButton;
+        Button mBookmarkButton;
 
         public NewsVideoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -261,7 +319,29 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mNewsVideoImage = itemView.findViewById(R.id.news_video_image);
             mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
             mNewsVideoPlay = itemView.findViewById(R.id.video_play);
+            mShareButton = itemView.findViewById(R.id.video_sharecard);
+            mWhatsButton = itemView.findViewById(R.id.video_sharewhats);
+            mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
+            mShareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        mShareClickListener.shareNormal(position);
 
+                    }
+                }
+            });
+            mWhatsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        mWhatsClickListener.shareWhats(position);
+
+                    }
+                }
+            });
             mNewsVideoPlay.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -273,27 +353,58 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
                 mNewsVideoHead.setTextColor(Color.parseColor("#ffa500"));
             });
+            mBookmarkButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mBookmarkListener.bookmarkAll(position);
+
+                }
+            });
         }
+
 
     }
     public class CustomAdViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView mNewsImage;
+         ImageView mNewsImage;
+         Button mAdLink;
 
-        public CustomAdViewHolder(@NonNull View itemView) {
+         CustomAdViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mNewsImage = itemView.findViewById(R.id.customadimage);
+            mAdLink = itemView.findViewById(R.id.adlinkout);
+
+            mAdLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        mAdClickListener.customAdLink(position);
+
+                    }
+                }
+            });
         }
     }
     public class FullImageViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView mNewsImage;
 
+        Button mShareButton;
         public FullImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mNewsImage = itemView.findViewById(R.id.fullimage);
+            mShareButton = itemView.findViewById(R.id.sharebuttoncard);
+
+            mShareButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mShareClickListener.shareNormal(position);
+
+                }
+            });
         }
     }
     @Override
