@@ -3,6 +3,8 @@ package com.vaankdeals.newsapp.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -31,6 +34,8 @@ import com.vaankdeals.newsapp.Activity.ExoActivity;
 import com.vaankdeals.newsapp.Activity.NewsActivity;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
+import com.vaankdeals.newsapp.Class.DatabaseHandler;
+import com.vaankdeals.newsapp.Model.NewsBook;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 
@@ -50,6 +55,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
     private final List<UnifiedNativeAd> mNativeAds = new ArrayList<>();
     private RequestQueue mRequestQueue;
     private List<Object> mNewsList = new ArrayList<>() ;
+    private static final String TABLE_NEWS = "newsbook";
+    private static final String NEWS_ID = "newsid";
 
     public NewsFragment() {
         // Required empty public constructor
@@ -229,7 +236,51 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
         startActivity(browserIntent);
     }
     public void bookmarkAll(int position){
-        Toast.makeText(getContext(),"Bookmark Button",Toast.LENGTH_SHORT).show();
+        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
+        if(clickeditem.getmNewsType().equals("1")){
+            final Button buttonNews = (Button)getActivity().findViewById(R.id.bookmark_button);
+            buttonNews.setBackgroundResource(R.drawable.bookmark_button_clicked);
+        }
+else if(clickeditem.getmNewsType().equals("5")) {
+            final Button buttonVideo = (Button) getActivity().findViewById(R.id.video_bookmark_button);
+            buttonVideo.setBackgroundResource(R.drawable.bookmark_button_clicked);
+
+        }
+        DatabaseHandler db = new DatabaseHandler(getContext());
+
+        String fieldValue =String.valueOf(clickeditem.getmNewsId());
+        String countQuery = "SELECT  * FROM " + TABLE_NEWS + " where " + NEWS_ID +  " = " + fieldValue;
+        SQLiteDatabase dbs = db.getReadableDatabase();
+        SQLiteDatabase dbsw = db.getWritableDatabase();
+        Cursor cursor = dbs.rawQuery(countQuery, null);
+        int recount = cursor.getCount();
+
+        if(recount <= 0){
+
+
+            db.addContact(new NewsBook(0,clickeditem.getmNewsHead(),clickeditem.getmNewsDesc(),
+                    clickeditem.getmNewsImage(),clickeditem.getmNewsSource(),clickeditem.getmNewsDay(),
+                    clickeditem.getmNewslink(),clickeditem.getmNewsId(),
+                    clickeditem.getmNewsType(),clickeditem.getmNewsVideo()));
+            Toast.makeText(getContext(),"News Saved", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            if(clickeditem.getmNewsType().equals("1")){
+                final Button buttonNews = (Button)getActivity().findViewById(R.id.bookmark_button);
+                buttonNews.setBackgroundResource(R.drawable.bookmark_button);
+            }
+            else if(clickeditem.getmNewsType().equals("5")) {
+                final Button buttonVideo = (Button) getActivity().findViewById(R.id.video_bookmark_button);
+                buttonVideo.setBackgroundResource(R.drawable.bookmark_button);
+
+            }
+            dbsw.delete(TABLE_NEWS, NEWS_ID + " = ?",
+                    new String[] { String.valueOf(fieldValue) });
+            Toast.makeText(getContext(),"News Removed", Toast.LENGTH_SHORT).show();
+        }
+
+        cursor.close();
+
 
     }
 }
