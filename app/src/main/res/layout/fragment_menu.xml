@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
-                    android:background="@drawable/feed"/>
+                    android:background="@drawable/allnews"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -136,7 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
-                    android:background="@drawable/feed" />
+                    android:background="@drawable/topstories" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
-                    android:background="@drawable/feed" />
+                    android:background="@drawable/trending" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="2dp"
-                        android:background="@drawable/feed" />
+                        android:background="@drawable/bookmarks" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -222,69 +222,97 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     app:columnCount="3"
-                    app:rowCount="3">
+                    app:rowCount="5">
 
                     <Button
-                        android:id="@+id/demo1"
+                        android:id="@+id/coronavirus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/coronavirus"/>
 
                     <Button
-                        android:id="@+id/demo2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
-                        android:background="@drawable/tech_button"/>
-
-                    <Button
-                        android:id="@+id/demo3"
+                        android:id="@+id/caa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/caa"/>
 
                     <Button
-                        android:id="@+id/demo4"
+                        android:id="@+id/india"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="-7dp"
+                        android:background="@drawable/india"/>
+
+                    <Button
+                        android:id="@+id/business"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/business"/>
 
                     <Button
-                        android:id="@+id/demo5"
+                        android:id="@+id/politics"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/politics"/>
 
                     <Button
-                        android:id="@+id/demo6"
+                        android:id="@+id/sports"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/sports"/>
 
                     <Button
-                        android:id="@+id/demo7"
+                        android:id="@+id/technology"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/technology"/>
 
                     <Button
-                        android:id="@+id/demo8"
+                        android:id="@+id/entertainment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/entertainment"/>
 
                     <Button
-                        android:id="@+id/demo9"
+                        android:id="@+id/international"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
-                        android:background="@drawable/tech_button"/>
+                        android:background="@drawable/international"/>
+
+                    <Button
+                        android:id="@+id/automobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:background="@drawable/automobile"/>
+
+                    <Button
+                        android:id="@+id/science"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="-7dp"
+                        android:background="@drawable/science"/>
+
+                    <Button
+                        android:id="@+id/fashion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="-7dp"
+                        android:background="@drawable/fashion"/>
+
+                    <Button
+                        android:id="@+id/travel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:background="@drawable/travel"/>
 
 
                 </androidx.gridlayout.widget.GridLayout>
