@@ -2,6 +2,7 @@ package com.vaankdeals.newsapp.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     MenuFragment menuFragment;
     NewsFragment newsFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,25 +31,29 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.viewTab);
 
-        getSupportActionBar().hide();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         menuFragment = new MenuFragment();
         newsFragment = new NewsFragment();
-
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
-        viewPagerAdapter.addFragment(menuFragment);
-        viewPagerAdapter.addFragment(newsFragment);
+        viewPagerAdapter.addFragment(menuFragment,"Discover");
+        viewPagerAdapter.addFragment(newsFragment,"News");
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(1);
+
+
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragments = new ArrayList<>();
+        private List<String> fragmentsTitle = new ArrayList<>();
         private ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
             super(fm, behavior);
         }
 
-        private void addFragment(Fragment fragment){
+        private void addFragment(Fragment fragment,String title){
             fragments.add(fragment);
+            fragmentsTitle.add(title);
         }
 
         @NonNull
@@ -56,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
             return fragments.get(position);
         }
 
+
+        public CharSequence getPageTitle(int position) {
+            return fragmentsTitle.get(position);
+        }
         @Override
         public int getCount() {
             return fragments.size();

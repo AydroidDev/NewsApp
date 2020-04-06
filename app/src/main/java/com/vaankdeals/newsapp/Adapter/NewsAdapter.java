@@ -1,5 +1,6 @@
 package com.vaankdeals.newsapp.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -51,6 +53,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private whatsClickListener mWhatsClickListener;
     private adClickListener mAdClickListener;
     private bookmarkListener mBookmarkListener;
+    private actionbarListener mActionbarListener;
+    public interface actionbarListener{
+        void actionBarView();
+    }
+    public void setactionbarListener(actionbarListener listener){
+        mActionbarListener = listener;
+    }
     public interface videoClickListener{
         void videoActivity(int position);
     }
@@ -107,7 +116,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return new NewsViewHolder(v);
             case UNIFIED_NATIVE_AD_VIEW_TYPE:
                 View unifiedNativeLayoutView = LayoutInflater.from(
-                        viewGroup.getContext()).inflate(R.layout.ad_unified_news,
+                        viewGroup.getContext()).inflate(R.layout.ad_google_new,
                         viewGroup, false);
                 return new UnifiedNativeAdViewHolder(unifiedNativeLayoutView);
             case FULL_IMAGE_TYPE:
@@ -157,6 +166,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
@@ -189,6 +199,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 });
 
+                webViewViewHolder.mWebView.getSettings().setDomStorageEnabled(true);
                 webViewViewHolder.mWebView.getSettings().setJavaScriptEnabled(true);
                 webViewViewHolder.mWebView.loadUrl(web_url);
 
@@ -295,6 +306,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Button mShareButton;
         Button mWhatsButton;
         Button mBookmarkButton;
+        LinearLayout mLayout;
 
         NewsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -306,7 +318,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mShareButton = itemView.findViewById(R.id.sharecard);
             mWhatsButton = itemView.findViewById(R.id.sharewhats);
             mBookmarkButton = itemView.findViewById(R.id.bookmark_button);
-
+            mLayout = itemView.findViewById(R.id.news_item);
             mNewsHead.setOnClickListener(v -> {
                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
                 mNewsHead.setTextColor(Color.parseColor("#ffa500"));
@@ -333,6 +345,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }
             });
+            mLayout.setOnClickListener(v -> {
+
+                    mActionbarListener.actionBarView();
+            });
         }
     }
     public class NewsVideoViewHolder extends RecyclerView.ViewHolder{
@@ -345,6 +361,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Button mShareButton;
         Button mWhatsButton;
         Button mBookmarkButton;
+        LinearLayout mLayout;
 
         public NewsVideoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -357,6 +374,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mShareButton = itemView.findViewById(R.id.video_sharecard);
             mWhatsButton = itemView.findViewById(R.id.video_sharewhats);
             mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
+            mLayout = itemView.findViewById(R.id.news_video_item);
 
 
 
@@ -398,6 +416,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     mBookmarkListener.bookmarkAll(position);
 
                 }
+            });
+            mLayout.setOnClickListener(v -> {
+
+                mActionbarListener.actionBarView();
             });
         }
 
@@ -464,7 +486,12 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         // check before trying to display them.
         NativeAd.Image icon = nativeAd.getIcon();
 
-
+        if (icon == null) {
+            adView.getIconView().setVisibility(View.INVISIBLE);
+        } else {
+            ((ImageView) adView.getIconView()).setImageDrawable(icon.getDrawable());
+            adView.getIconView().setVisibility(View.VISIBLE);
+        }
         if (nativeAd.getStore() == null) {
             adView.getStoreView().setVisibility(View.INVISIBLE);
         } else {

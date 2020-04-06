@@ -1,22 +1,27 @@
 package com.vaankdeals.newsapp.Fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import spencerstudios.com.bungeelib.Bungee;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -48,15 +53,20 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class NewsFragment extends Fragment implements NewsAdapter.videoClickListener,NewsAdapter.newsOutListener,NewsAdapter.whatsClickListener,NewsAdapter.shareClickListener,NewsAdapter.adClickListener,NewsAdapter.bookmarkListener{
+public class NewsFragment extends Fragment implements NewsAdapter.videoClickListener,NewsAdapter.newsOutListener,NewsAdapter.whatsClickListener,NewsAdapter.shareClickListener,NewsAdapter.adClickListener,NewsAdapter.bookmarkListener,NewsAdapter.actionbarListener{
 
     private NewsAdapter newsAdapter;
-    private static final int NUMBER_OF_ADS = 1;
+    private static final int NUMBER_OF_ADS = 2;
     private final List<UnifiedNativeAd> mNativeAds = new ArrayList<>();
     private RequestQueue mRequestQueue;
     private List<Object> mNewsList = new ArrayList<>() ;
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
+    private boolean firstTime = true;
+
+
+    private Toolbar toolbar;
+    TextView mTitle;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -71,6 +81,13 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
 
         mRequestQueue = Volley.newRequestQueue((getActivity()));
 
+        toolbar = (Toolbar) rootView.findViewById(R.id.tool_barz);
+        mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        mTitle.setText("My Deals");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
         ViewPager2 newsViewpager = rootView.findViewById(R.id.news_swipe);
         newsAdapter = new NewsAdapter(getContext(),mNewsList);
@@ -80,15 +97,81 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
         newsAdapter.setwhatsClickListener(NewsFragment.this);
         newsAdapter.setadClickListener(NewsFragment.this);
         newsAdapter.setbookmarkListener(NewsFragment.this);
+        newsAdapter.setactionbarListener(NewsFragment.this);
+
+        newsViewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+
+                if(positionOffsetPixels>0){
+
+                    toolbar.animate()
+                            .setDuration(150)
+                            .translationY(0);
+                    ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+                }
+
+            }
+        });
+
+        int TIME = 4000;
+        new Handler().postDelayed(() -> {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().hide(); //call function!
+        }, TIME);
+        newsViewpager.setPageTransformer(new ZoomOutPageTransformer());
         newsViewpager.setAdapter(newsAdapter);
+
+
         parseJson();
         loadNativeAds();
 
+
+
         return rootView;
     }
+    public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
 
 
+        private static final float MIN_SCALE = 0.90f;
+        private static final float MIN_ALPHA = 0.5f;
+        @Override
+        public void transformPage(View page, float position) {
 
+            if (position < -1){    // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                page.setAlpha(0);
+
+            }
+            else if (position <= 0){    //// [-1,0]
+                page.setAlpha(1);
+                page.setScaleY(1);
+                page.setScaleX(1);
+
+            }
+            else if (position <= 1){    // (0,1]
+
+                float fh=-position*page.getWidth();
+
+                float fhi=-fh;
+
+                page.setAlpha(Math.max(MIN_ALPHA,1-Math.abs(position)));
+                page.setScaleX(Math.max(MIN_SCALE,1-Math.abs(position)));
+                page.setScaleY(Math.max(MIN_SCALE,1-Math.abs(position)));
+
+
+            }
+            else {    // (1,+Infinity]
+                // This page is way off-screen to the right.
+
+                page.setAlpha(0);
+
+
+            }
+
+
+        }
+    }
     private void insertAdsInMenuItems() {
         if (mNativeAds.size() <= 0) {
             return;
@@ -217,11 +300,19 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
     }
     public void newsDetailActivity(int position){
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
-        Intent newsIntent = new Intent(getContext(), NewsActivity.class);
-        newsIntent.putExtra("ns_url", clickeditem.getmNewslink());
-        newsIntent.putExtra("ns_title", clickeditem.getmNewsHead());
-        startActivity(newsIntent);
-        Bungee.zoom(getContext());
+        String newsLink =clickeditem.getmNewslink();
+        if (!newsLink.isEmpty()){
+            Intent newsIntent = new Intent(getContext(), NewsActivity.class);
+            newsIntent.putExtra("ns_url", clickeditem.getmNewslink());
+            newsIntent.putExtra("ns_title", clickeditem.getmNewsHead());
+            startActivity(newsIntent);
+            Bungee.zoom(getContext());
+        }
+        else {
+            Toast.makeText(getContext(),"Full News Not Available",Toast.LENGTH_SHORT).show();
+        }
+
+
     }
     public void shareNormal(int position){
         Toast.makeText(getContext(),"Share Normal",Toast.LENGTH_SHORT).show();
@@ -280,8 +371,19 @@ else if(clickeditem.getmNewsType().equals("5")) {
         }
 
         cursor.close();
+    }
+    public void actionBarView(){
 
+        ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
 
+        assert actionBar != null;
+        if (actionBar.isShowing()) {
+
+            actionBar.hide();
+        } else {
+
+            actionBar.show();
+        }
     }
 }
 

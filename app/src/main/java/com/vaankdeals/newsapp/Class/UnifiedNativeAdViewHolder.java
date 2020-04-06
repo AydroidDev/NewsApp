@@ -28,6 +28,7 @@ public class UnifiedNativeAdViewHolder extends RecyclerView.ViewHolder {
 
         // Register the view used for each individual asset.
         adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
+        adView.setIconView(adView.findViewById(R.id.ad_icon));
         adView.setBodyView(adView.findViewById(R.id.ad_body));
         adView.setCallToActionView(adView.findViewById(R.id.ad_call_to_action));
         adView.setStarRatingView(adView.findViewById(R.id.ad_stars));

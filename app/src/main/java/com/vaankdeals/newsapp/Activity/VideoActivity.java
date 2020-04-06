@@ -3,11 +3,6 @@ package com.vaankdeals.newsapp.Activity;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.widget.TextView;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -15,6 +10,7 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.R;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,10 +26,6 @@ public class VideoActivity extends YouTubeBaseActivity {
         Slidr.attach(this);
 
         // Find the Ad Container
-
-
-
-
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         String mUrl = bundle.getString("yt_url");
