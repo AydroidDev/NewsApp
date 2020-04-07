@@ -224,35 +224,28 @@
                     app:columnCount="3"
                     app:rowCount="5">
 
-                    <Button
-                        android:id="@+id/coronavirus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/coronavirus"/>
-
-                    <Button
-                        android:id="@+id/caa"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
-                        android:background="@drawable/caa"/>
 
                     <Button
                         android:id="@+id/india"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:tag="india"
                         android:layout_marginStart="-7dp"
+                        android:foreground="?attr/selectableItemBackground"
                         android:background="@drawable/india"/>
 
                     <Button
                         android:id="@+id/business"
+                        android:tag="business"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
+                        android:foreground="?attr/selectableItemBackground"
                         android:background="@drawable/business"/>
 
                     <Button
                         android:id="@+id/politics"
+                        android:tag="politics"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
@@ -260,6 +253,7 @@
 
                     <Button
                         android:id="@+id/sports"
+                        android:tag="sports"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
@@ -267,6 +261,7 @@
 
                     <Button
                         android:id="@+id/technology"
+                        android:tag="technology"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
@@ -274,6 +269,7 @@
 
                     <Button
                         android:id="@+id/entertainment"
+                        android:tag="entertainment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
@@ -281,6 +277,7 @@
 
                     <Button
                         android:id="@+id/international"
+                        android:tag="international"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
@@ -288,6 +285,7 @@
 
                     <Button
                         android:id="@+id/automobile"
+                        android:tag="automobile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
@@ -295,6 +293,7 @@
 
                     <Button
                         android:id="@+id/science"
+                        android:tag="science"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
@@ -302,6 +301,7 @@
 
                     <Button
                         android:id="@+id/fashion"
+                        android:tag="fashion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="-7dp"
@@ -309,6 +309,7 @@
 
                     <Button
                         android:id="@+id/travel"
+                        android:tag="travel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"

@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.mal.pc.shorts.MainActivity">
+
+    <item
+        android:id="@+id/action_up"
+        android:orderInCategory="200"
+        android:title="upward"
+        android:icon="@drawable/ic_arrow_upward_black"
+        app:showAsAction="ifRoom"/>
+</menu>

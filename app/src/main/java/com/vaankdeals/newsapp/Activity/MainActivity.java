@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.Menu;
 
 import com.vaankdeals.newsapp.Fragment.MenuFragment;
 import com.vaankdeals.newsapp.Fragment.NewsFragment;
@@ -44,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void swipeoptions(){
+        viewPager.setCurrentItem(0,true);
+    }
+    public void swipeoptionstwo(){
+        viewPager.setCurrentItem(1,true);
+    }
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragments = new ArrayList<>();
         private List<String> fragmentsTitle = new ArrayList<>();

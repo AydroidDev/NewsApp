@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.Adapter.SavedAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Model.NewsBook;
@@ -32,6 +33,7 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved);
+        Slidr.attach(this);
         getSupportActionBar().hide();
         DatabaseHandler db = new DatabaseHandler(this);
         mSavedList = db.getAllContacts();

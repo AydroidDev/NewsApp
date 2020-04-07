@@ -15,9 +15,11 @@ import androidx.viewpager2.widget.ViewPager2;
 import spencerstudios.com.bungeelib.Bungee;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,10 +38,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.vaankdeals.newsapp.Activity.ExoActivity;
+import com.vaankdeals.newsapp.Activity.MainActivity;
 import com.vaankdeals.newsapp.Activity.NewsActivity;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
+import com.vaankdeals.newsapp.Class.ZoomOutPageTransformer;
 import com.vaankdeals.newsapp.Model.NewsBook;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
@@ -62,7 +66,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
     private List<Object> mNewsList = new ArrayList<>() ;
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
-    private boolean firstTime = true;
+    ViewPager2 newsViewpager;
 
 
     private Toolbar toolbar;
@@ -77,6 +81,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
 
         mRequestQueue = Volley.newRequestQueue((getActivity()));
@@ -87,9 +92,10 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
         mTitle.setText("My Deals");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
 
         MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
-        ViewPager2 newsViewpager = rootView.findViewById(R.id.news_swipe);
+         newsViewpager = rootView.findViewById(R.id.news_swipe);
         newsAdapter = new NewsAdapter(getContext(),mNewsList);
         newsAdapter.setvideoClickListener(NewsFragment.this);
         newsAdapter.setnewsOutListener(NewsFragment.this);
@@ -130,48 +136,37 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
 
         return rootView;
     }
-    public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
 
 
-        private static final float MIN_SCALE = 0.90f;
-        private static final float MIN_ALPHA = 0.5f;
-        @Override
-        public void transformPage(View page, float position) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.menu_home, menu);
 
-            if (position < -1){    // [-Infinity,-1)
-                // This page is way off-screen to the left.
-                page.setAlpha(0);
-
-            }
-            else if (position <= 0){    //// [-1,0]
-                page.setAlpha(1);
-                page.setScaleY(1);
-                page.setScaleX(1);
-
-            }
-            else if (position <= 1){    // (0,1]
-
-                float fh=-position*page.getWidth();
-
-                float fhi=-fh;
-
-                page.setAlpha(Math.max(MIN_ALPHA,1-Math.abs(position)));
-                page.setScaleX(Math.max(MIN_SCALE,1-Math.abs(position)));
-                page.setScaleY(Math.max(MIN_SCALE,1-Math.abs(position)));
+    }
 
 
-            }
-            else {    // (1,+Infinity]
-                // This page is way off-screen to the right.
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                ((MainActivity)getActivity()).swipeoptions();
+                return true;
+            case R.id.action_up_home:
+                newsViewpager.setCurrentItem(0,true);
+                return true;
 
-                page.setAlpha(0);
+            case R.id.refresh:
+            Toast.makeText(getContext(),"Ref4reshing...",Toast.LENGTH_SHORT).show();
 
+                return true;
 
-            }
-
-
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
+
     private void insertAdsInMenuItems() {
         if (mNativeAds.size() <= 0) {
             return;
@@ -191,30 +186,16 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
     private void loadNativeAds() {
         AdLoader.Builder builder = new AdLoader.Builder(Objects.requireNonNull(getActivity()), getString(R.string.ad_unit_id_news_main));
 
-        // A native ad loaded successfully, check if the ad loader has finished loading
-        // and if so, insert the ads into the list.
-        // A native ad failed to load, check if the ad loader has finished loading
-        // and if so, insert the ads into the list.
-        // The AdLoader used to load ads.
         AdLoader adLoader = builder.forUnifiedNativeAd(
-                new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                        // A native ad loaded successfully, check if the ad loader has finished loading
-                        // and if so, insert the ads into the list.
-                        mNativeAds.add(unifiedNativeAd);
-                        if (mNativeAds.size() == NUMBER_OF_ADS) {
-                            NewsFragment.this.insertAdsInMenuItems();
-
-                        }
-
+                unifiedNativeAd -> {
+                    mNativeAds.add(unifiedNativeAd);
+                    if (mNativeAds.size() == NUMBER_OF_ADS) {
+                        NewsFragment.this.insertAdsInMenuItems();
                     }
                 }).withAdListener(
                 new AdListener() {
                     @Override
                     public void onAdFailedToLoad(int errorCode) {
-                        // A native ad failed to load, check if the ad loader has finished loading
-                        // and if so, insert the ads into the list.
                         Log.e("MainActivity", "The previous native ad failed to load. Attempting to"
                                 + " load another.");
                         if (mNativeAds.size() == NUMBER_OF_ADS) {
@@ -232,43 +213,30 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
         String url = getString(R.string.server_website);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("server_response");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject ser = jsonArray.getJSONObject(i);
-                                String news_head = ser.getString("news_head");
-                                String news_desc = ser.getString("news_desc");
-                                String news_image = ser.getString("news_image");
-                                String news_source = ser.getString("news_source");
-                                String news_day = ser.getString("news_day");
-                                String news_id = ser.getString("news_id");
-                                String news_link = ser.getString("news_link");
-                                String news_type = ser.getString("news_type");
-                                String news_video = ser.getString("news_video");
+                response -> {
+                    try {
+                        JSONArray jsonArray = response.getJSONArray("server_response");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject ser = jsonArray.getJSONObject(i);
+                            String news_head = ser.getString("news_head");
+                            String news_desc = ser.getString("news_desc");
+                            String news_image = ser.getString("news_image");
+                            String news_source = ser.getString("news_source");
+                            String news_day = ser.getString("news_day");
+                            String news_id = ser.getString("news_id");
+                            String news_link = ser.getString("news_link");
+                            String news_type = ser.getString("news_type");
+                            String news_video = ser.getString("news_video");
 
-                                mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video));
-                            }
-                            // Just call notifyDataSetChanged here
-
-                            newsAdapter.notifyDataSetChanged();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video));
                         }
+                        newsAdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, Throwable::printStackTrace);
         mRequestQueue.add(request);
     }
-
-
-
     @Override
     public void videoActivity(int position) {
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);

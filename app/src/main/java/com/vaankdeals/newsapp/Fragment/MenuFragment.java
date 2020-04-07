@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.vaankdeals.newsapp.Activity.AllNewsActivity;
 import com.vaankdeals.newsapp.Activity.SavedActivity;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.R;
@@ -21,7 +22,7 @@ import androidx.fragment.app.Fragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MenuFragment extends Fragment {
+public class MenuFragment extends Fragment implements View.OnClickListener{
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
@@ -36,29 +37,50 @@ public class MenuFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
+
+
+        Button india = rootView.findViewById(R.id.india);
+        Button business = rootView.findViewById(R.id.business);
+        Button politics = rootView.findViewById(R.id.politics);
+        Button sports = rootView.findViewById(R.id.sports);
+        Button technology = rootView.findViewById(R.id.technology);
+        Button entertainment = rootView.findViewById(R.id.entertainment);
+        Button international = rootView.findViewById(R.id.international);
+        Button automobile = rootView.findViewById(R.id.automobile);
+        Button science = rootView.findViewById(R.id.science);
+        Button fashion = rootView.findViewById(R.id.fashion);
+        Button travel = rootView.findViewById(R.id.travel);
+
+        india.setOnClickListener(this);
+        business.setOnClickListener(this);
+        politics.setOnClickListener(this);
+        sports.setOnClickListener(this);
+        technology.setOnClickListener(this);
+        entertainment.setOnClickListener(this);
+        international.setOnClickListener(this);
+        automobile.setOnClickListener(this);
+        science.setOnClickListener(this);
+        fashion.setOnClickListener(this);
+        travel.setOnClickListener(this);
+
+
+
         Button saved = (Button)rootView.findViewById(R.id.bookmarks);
 
+        saved.setOnClickListener(v -> {
+            DatabaseHandler db = new DatabaseHandler(getContext());
+            String countQuery = "SELECT  * FROM " + TABLE_NEWS;
+            SQLiteDatabase dbsVideo = db.getReadableDatabase();
+            Cursor cursorVideo = dbsVideo.rawQuery(countQuery, null);
+            int recountVideo = cursorVideo.getCount();
+            cursorVideo.close();
+            if(recountVideo <= 0){
+                Toast.makeText(getContext(),"Bookmarks Is Empty",Toast.LENGTH_SHORT).show();
 
-
-        saved.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                DatabaseHandler db = new DatabaseHandler(getContext());
-                String countQuery = "SELECT  * FROM " + TABLE_NEWS;
-                SQLiteDatabase dbsVideo = db.getReadableDatabase();
-                Cursor cursorVideo = dbsVideo.rawQuery(countQuery, null);
-                int recountVideo = cursorVideo.getCount();
-                cursorVideo.close();
-                if(recountVideo <= 0){
-                    Toast.makeText(getContext(),"Bookmarks Is Empty",Toast.LENGTH_SHORT).show();
-
-                }
-                else {
-                    Intent detailintent = new Intent(getContext(), SavedActivity.class);
-                    startActivity(detailintent);
-                }
-
+            }
+            else {
+                Intent detailintent = new Intent(getContext(), SavedActivity.class);
+                startActivity(detailintent);
             }
 
         });
@@ -66,4 +88,11 @@ public class MenuFragment extends Fragment {
         return rootView;
     }
 
+
+    @Override
+    public void onClick(View v) {
+                Intent allIntent = new Intent(getContext(), AllNewsActivity.class);
+                allIntent.putExtra("news_cat",v.getTag().toString());
+                startActivity(allIntent);
+    }
 }
