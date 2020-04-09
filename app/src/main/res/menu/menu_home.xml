@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_up_home"
-        android:orderInCategory="200"
+        android:orderInCategory="1"
         android:title="upward"
-        android:icon="@drawable/ic_arrow_upward_black"
+        android:icon="@drawable/up"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/refresh"
-        android:orderInCategory="200"
+        android:orderInCategory="2"
         android:title="refresh"
-        android:icon="@drawable/ic_refresh_black_24dp"
+        android:icon="@drawable/refresh"
         app:showAsAction="ifRoom"/>
+
 </menu>

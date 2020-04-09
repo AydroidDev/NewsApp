@@ -89,10 +89,10 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
         toolbar = (Toolbar) rootView.findViewById(R.id.tool_barz);
         mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        mTitle.setText("My Deals");
+        mTitle.setText("All News");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
 
         MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
          newsViewpager = rootView.findViewById(R.id.news_swipe);
@@ -158,7 +158,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
                 return true;
 
             case R.id.refresh:
-            Toast.makeText(getContext(),"Ref4reshing...",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"Refreshing...",Toast.LENGTH_SHORT).show();
 
                 return true;
 
