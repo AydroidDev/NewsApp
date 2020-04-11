@@ -1,9 +1,17 @@
 package com.vaankdeals.newsapp.Fragment;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,7 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import spencerstudios.com.bungeelib.Bungee;
 
+import android.os.Environment;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +33,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +46,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -52,9 +67,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 
 public class NewsFragment extends Fragment implements NewsAdapter.videoClickListener,NewsAdapter.newsOutListener,NewsAdapter.whatsClickListener,NewsAdapter.shareClickListener,NewsAdapter.adClickListener,NewsAdapter.bookmarkListener,NewsAdapter.actionbarListener{
@@ -67,8 +87,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
     ViewPager2 newsViewpager;
-
-
+    File imagePathz;
     private Toolbar toolbar;
     TextView mTitle;
 
@@ -285,9 +304,68 @@ public class NewsFragment extends Fragment implements NewsAdapter.videoClickList
     public void shareNormal(int position){
         Toast.makeText(getContext(),"Share Normal",Toast.LENGTH_SHORT).show();
     }
-    public void shareWhats(int position){
+    public void shareWhats(int position,Bitmap bitmap){
+        LayoutInflater factory = getLayoutInflater();
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final Bitmap b = drawToBitmap(getContext(),R.layout.news_share, metrics.widthPixels,
+                metrics.heightPixels,position,bitmap);
+        saveBitmap(b);
         Toast.makeText(getContext(),"Share Whatsapp",Toast.LENGTH_SHORT).show();
     }
+
+    public  Bitmap drawToBitmap(Context context, int layoutResId,
+                                       int width, int height,int position,Bitmap bitmap)
+    {
+        final Bitmap bmp = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bmp);
+        final LayoutInflater inflater =
+                (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(layoutResId,null);
+        ImageView newsimage= layout.findViewById(R.id.news_image_share);
+        TextView newshead = layout.findViewById(R.id.news_head_share);
+        TextView newsdesc= layout.findViewById(R.id.news_desc_share);
+        NewsModel currentItem= (NewsModel) mNewsList.get(position);
+        newsimage.setImageBitmap(bitmap);
+        newshead.setText(currentItem.getmNewsHead());
+        newsdesc.setText(currentItem.getmNewsDesc());
+        layout.measure(
+                View.MeasureSpec.makeMeasureSpec(canvas.getWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(canvas.getHeight(), View.MeasureSpec.EXACTLY));
+        layout.layout(0,0,layout.getMeasuredWidth(),layout.getMeasuredHeight());
+        layout.draw(canvas);
+        return bmp;
+    }
+    public void saveBitmap(Bitmap bitmap) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Random rnd = new Random();
+        int nameshare = 100000 + rnd.nextInt(900000);
+        Bitmap result = Bitmap.createBitmap(w, h, bitmap.getConfig());
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        Bitmap waterMark = BitmapFactory.decodeResource(this.getResources(), R.drawable.waterbottom);
+        canvas.drawBitmap(waterMark, 0, 1100, null);
+        String folderpath = Environment.getExternalStorageDirectory() + "/NewsApp";
+        File folder = new File(folderpath);
+        if(!folder.exists()){
+            File wallpaperDirectory = new File(folderpath);
+            wallpaperDirectory.mkdirs();
+        }
+        imagePathz = new File(Environment.getExternalStorageDirectory() +"/NewsApp/SharedNews"+nameshare+".png");
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(imagePathz);
+            result.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.e("GREC", e.getMessage(), e);
+        } catch (IOException e) {
+            Log.e("GREC", e.getMessage(), e);
+        }
+    }
+
     public void customAdLink(int position){
 
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);

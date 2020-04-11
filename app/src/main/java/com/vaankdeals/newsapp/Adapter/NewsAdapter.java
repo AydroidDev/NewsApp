@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +82,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mShareClickListener = listener;
     }
     public interface whatsClickListener{
-        void shareWhats(int position);
+        void shareWhats(int position,Bitmap bitmap);
     }
     public void setwhatsClickListener(whatsClickListener listener){
         mWhatsClickListener = listener;
@@ -334,7 +336,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mWhatsButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mWhatsClickListener.shareWhats(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mWhatsClickListener.shareWhats(position,bitmap);
 
                 }
             });
@@ -394,7 +398,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        mWhatsClickListener.shareWhats(position);
+                        BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                        Bitmap bitmap = drawable.getBitmap();
+                        mWhatsClickListener.shareWhats(position,bitmap);
 
                     }
                 }
