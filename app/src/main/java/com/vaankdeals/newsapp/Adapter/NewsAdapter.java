@@ -76,7 +76,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public interface shareClickListener{
-        void shareNormal(int position);
+        void shareNormal(int position,Bitmap bitmap);
     }
     public void setshareClickListener(shareClickListener listener){
         mShareClickListener = listener;
@@ -323,13 +323,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mLayout = itemView.findViewById(R.id.news_item);
             mNewsHead.setOnClickListener(v -> {
                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
-                mNewsHead.setTextColor(Color.parseColor("#ffa500"));
             });
 
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mShareClickListener.shareNormal(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListener.shareNormal(position,bitmap);
 
                 }
             });
@@ -383,26 +384,22 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
 
-            mShareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        mShareClickListener.shareNormal(position);
+            mShareButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListener.shareNormal(position,bitmap);
 
-                    }
                 }
             });
-            mWhatsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
-                        Bitmap bitmap = drawable.getBitmap();
-                        mWhatsClickListener.shareWhats(position,bitmap);
+            mWhatsButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mWhatsClickListener.shareWhats(position,bitmap);
 
-                    }
                 }
             });
             mNewsVideoPlay.setOnClickListener(v -> {
@@ -414,7 +411,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
             mNewsVideoHead.setOnClickListener(v -> {
                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
-                mNewsVideoHead.setTextColor(Color.parseColor("#ffa500"));
             });
             mBookmarkButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -468,7 +464,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mShareClickListener.shareNormal(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListener.shareNormal(position,bitmap);
 
                 }
             });

@@ -7,4 +7,5 @@
     <string name="server_website_all">http://filmapp.000webhostapp.com/newsapp/json_news_all.php</string>
     <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
     <string name="ad_unit_id_news_main">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="no_internet">"  No Internet ! Please Connect and Refresh." </string>
 </resources>
