@@ -164,6 +164,7 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
 
 
     }
+
     public void shareNormalAll(int position){
         Toast.makeText(this,"Share Normal",Toast.LENGTH_SHORT).show();
     }

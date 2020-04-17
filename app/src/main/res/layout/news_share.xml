@@ -38,7 +38,7 @@
                 android:minLines="2"
                 android:maxLines="2"
                 android:id="@+id/news_head_share"
-                android:fontFamily="@font/clan_pro_bold"
+                android:fontFamily="@font/robotomedium"
                 android:lineSpacingExtra="2dp"
                 android:textColor="#000000"
                 android:textSize="17sp"
