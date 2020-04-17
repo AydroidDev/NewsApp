@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,13 +76,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public interface shareClickListener{
-        void shareNormal(int position);
+        void shareNormal(int position,Bitmap bitmap);
     }
     public void setshareClickListener(shareClickListener listener){
         mShareClickListener = listener;
     }
     public interface whatsClickListener{
-        void shareWhats(int position);
+        void shareWhats(int position,Bitmap bitmap);
     }
     public void setwhatsClickListener(whatsClickListener listener){
         mWhatsClickListener = listener;
@@ -321,20 +323,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mLayout = itemView.findViewById(R.id.news_item);
             mNewsHead.setOnClickListener(v -> {
                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
-                mNewsHead.setTextColor(Color.parseColor("#ffa500"));
             });
 
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mShareClickListener.shareNormal(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListener.shareNormal(position,bitmap);
 
                 }
             });
             mWhatsButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mWhatsClickListener.shareWhats(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mWhatsClickListener.shareWhats(position,bitmap);
 
                 }
             });
@@ -379,24 +384,22 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
 
-            mShareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        mShareClickListener.shareNormal(position);
+            mShareButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListener.shareNormal(position,bitmap);
 
-                    }
                 }
             });
-            mWhatsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        mWhatsClickListener.shareWhats(position);
+            mWhatsButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mWhatsClickListener.shareWhats(position,bitmap);
 
-                    }
                 }
             });
             mNewsVideoPlay.setOnClickListener(v -> {
@@ -408,7 +411,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
             mNewsVideoHead.setOnClickListener(v -> {
                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
-                mNewsVideoHead.setTextColor(Color.parseColor("#ffa500"));
             });
             mBookmarkButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -462,7 +464,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mShareClickListener.shareNormal(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListener.shareNormal(position,bitmap);
 
                 }
             });

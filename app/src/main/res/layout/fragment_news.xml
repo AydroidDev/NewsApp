@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#000"
+    android:id="@+id/newsSwipeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragment.NewsFragment">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
         android:animateLayoutChanges="true"
         android:layout_height="wrap_content"
@@ -16,6 +20,20 @@
             android:id="@+id/tool_barz"
             layout="@layout/toolbar_new" />
     </com.google.android.material.appbar.AppBarLayout>
+        <RelativeLayout
+            android:id="@+id/retry_box"
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <include
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                layout="@layout/no_internet" />
+
+
+        </RelativeLayout>
     <androidx.viewpager2.widget.ViewPager2
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,5 +42,5 @@
          />
 
 
-
-</FrameLayout>
+    </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
