@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -15,9 +14,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.R;
 
@@ -76,7 +72,6 @@ public class NewsActivity extends AppCompatActivity implements AdvancedWebView.L
         assert url != null;
         String host = url.getHost();
         activity_sub_title.setText(host);
-        Uri uri = Uri.parse(mUrl);
         mWebView = findViewById(R.id.webview);
         mWebView.setListener(this, this);
         getSupportActionBar().setTitle(mCaption);

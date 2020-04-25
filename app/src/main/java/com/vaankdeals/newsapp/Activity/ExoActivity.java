@@ -43,8 +43,6 @@ public class ExoActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exo);
 
-
-        Objects.requireNonNull(getSupportActionBar()).hide();
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         mUrl = bundle.getString("st_url");

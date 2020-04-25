@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,13 +64,13 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public interface shareClickListenerAll{
-        void shareNormalAll(int position);
+        void shareNormalAll(int position, Bitmap bitmap);
     }
     public void setshareClickListenerAll(shareClickListenerAll listener){
         mShareClickListenerAll = listener;
     }
     public interface whatsClickListenerAll{
-        void shareWhatsAll(int position);
+        void shareWhatsAll(int position,Bitmap bitmap);
     }
     public void setwhatsClickListenerAll(whatsClickListenerAll listener){
         mWhatsClickListenerAll = listener;
@@ -227,14 +229,18 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mShareClickListenerAll.shareNormalAll(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListenerAll.shareNormalAll(position,bitmap);
 
                 }
             });
             mWhatsButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mWhatsClickListenerAll.shareWhatsAll(position);
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mWhatsClickListenerAll.shareWhatsAll(position,bitmap);
 
                 }
             });
@@ -279,24 +285,22 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
 
-            mShareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        mShareClickListenerAll.shareNormalAll(position);
+            mShareButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListenerAll.shareNormalAll(position,bitmap);
 
-                    }
                 }
             });
-            mWhatsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        mWhatsClickListenerAll.shareWhatsAll(position);
+            mWhatsButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mWhatsClickListenerAll.shareWhatsAll(position,bitmap);
 
-                    }
                 }
             });
             mNewsVideoPlay.setOnClickListener(v -> {

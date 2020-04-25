@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +40,13 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private shareClickListener mShareClickListener;
     private whatsClickListener mWhatsClickListener;
     private bookmarkListener mBookmarkListener;
+    private actionbarListenerAll mActionbarListenerAll;;
+    public interface actionbarListenerAll{
+        void actionBarViewAll();
+    }
+    public void setactionbarListenerAll(actionbarListenerAll listener){
+        mActionbarListenerAll = listener;
+    }
     public interface videoClickListener{
         void videoActivity(int position);
     }
@@ -197,10 +205,12 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Button mShareButton;
         Button mWhatsButton;
         Button mBookmarkButton;
+        LinearLayout mLayout;
 
         NewsViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            mLayout = itemView.findViewById(R.id.news_item);
             mNewsHead = itemView.findViewById(R.id.news_head);
             mNewsDesc = itemView.findViewById(R.id.news_desc);
             mNewsImage = itemView.findViewById(R.id.news_image);
@@ -235,6 +245,10 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 }
             });
+            mLayout.setOnClickListener(v -> {
+
+                mActionbarListenerAll.actionBarViewAll();
+            });
         }
     }
     public class NewsVideoViewHolder extends RecyclerView.ViewHolder{
@@ -247,10 +261,12 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private Button mShareButton;
         private Button mWhatsButton;
         Button mBookmarkButton;
+        LinearLayout mLayout;
 
         public NewsVideoViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            mLayout = itemView.findViewById(R.id.news_video_item);
             mNewsVideoHead = itemView.findViewById(R.id.news_video_head);
             mNewsVideoDesc = itemView.findViewById(R.id.news_video_desc);
             mNewsVideoImage = itemView.findViewById(R.id.news_video_image);
@@ -296,6 +312,10 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mBookmarkListener.bookmarkAll(position);
 
                 }
+            });
+            mLayout.setOnClickListener(v -> {
+
+                mActionbarListenerAll.actionBarViewAll();
             });
         }
 

@@ -288,10 +288,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     public class WebViewViewHolder extends RecyclerView.ViewHolder{
 
-        public WebView mWebView;
+        private WebView mWebView;
         private ProgressBar mProgress;
 
-        public WebViewViewHolder(@NonNull View itemView) {
+        private WebViewViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mWebView = itemView.findViewById(R.id.webview_item);

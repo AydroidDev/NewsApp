@@ -1,51 +1,86 @@
 package com.vaankdeals.newsapp.Activity;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 import spencerstudios.com.bungeelib.Bungee;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.TouchDelegate;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import android.widget.Button;
 import android.widget.Toast;
+
 
 import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.Adapter.SavedAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
+import com.vaankdeals.newsapp.Class.DepthPageTransformer;
 import com.vaankdeals.newsapp.Model.NewsBook;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 import java.util.List;
+import java.util.Objects;
 
-public class SavedActivity extends AppCompatActivity implements SavedAdapter.videoClickListener,SavedAdapter.newsOutListener,SavedAdapter.whatsClickListener,SavedAdapter.shareClickListener,SavedAdapter.bookmarkListener {
+public class SavedActivity extends AppCompatActivity implements SavedAdapter.videoClickListener,SavedAdapter.newsOutListener,SavedAdapter.whatsClickListener,SavedAdapter.shareClickListener,SavedAdapter.bookmarkListener,SavedAdapter.actionbarListenerAll {
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
     private SavedAdapter newsAdapter;
     private List<NewsBook> mSavedList;
+    ViewPager2 newsViewpager;
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved);
         Slidr.attach(this);
-        getSupportActionBar().hide();
+        toolbar=findViewById(R.id.tool_bar_saved);
         DatabaseHandler db = new DatabaseHandler(this);
         mSavedList = db.getAllContacts();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Bookmarks");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        getSupportActionBar().hide();
         ViewPager2 newsViewpager = findViewById(R.id.news_swipe_saved);
         newsAdapter = new SavedAdapter(SavedActivity.this,mSavedList);
+        newsViewpager.setPageTransformer(new DepthPageTransformer());
         newsViewpager.setAdapter(newsAdapter);
         newsAdapter.setvideoClickListener(SavedActivity.this);
         newsAdapter.setnewsOutListener(this);
         newsAdapter.setshareClickListener(this);
         newsAdapter.setwhatsClickListener(this);
         newsAdapter.setbookmarkListener(this);
+        newsAdapter.setactionbarListenerAll(this);
 
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            case R.id.action_up_home:
+                newsViewpager.setCurrentItem(0,true);
+                return true;
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
     @Override
     public void videoActivity(int position) {
@@ -138,5 +173,19 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
         cursor.close();
 
 
+    }
+
+    @Override
+    public void actionBarViewAll() {
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        if (actionBar.isShowing()) {
+
+            actionBar.hide();
+        } else {
+
+            actionBar.show();
+        }
     }
 }

@@ -15,7 +15,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
@@ -33,10 +32,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -51,10 +51,9 @@ import com.vaankdeals.newsapp.Activity.MainActivity;
 import com.vaankdeals.newsapp.Activity.NewsActivity;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
-import com.vaankdeals.newsapp.BuildConfig;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
+import com.vaankdeals.newsapp.Class.DepthPageTransformer;
 import com.vaankdeals.newsapp.Class.NetworkChangeReceiver;
-import com.vaankdeals.newsapp.Class.ZoomOutPageTransformer;
 import com.vaankdeals.newsapp.Model.NewsBook;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
@@ -87,9 +86,11 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     private boolean isReceiverRegistered = false;
     private NetworkChangeReceiver networkChangeReceiver;
     private Toolbar toolbar;
-    private TextView mTitle;
-    SwipeRefreshLayout swipeRefreshLayout;
-    RelativeLayout retry_box;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RelativeLayout retry_box;
+    private LinearLayout loading_anim;
+    Context mContext;
+
     public NewsFragment() {
         // Required empty public constructor
     }
@@ -102,17 +103,18 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
 
-        mRequestQueue = Volley.newRequestQueue((getActivity()));
+        mRequestQueue = Volley.newRequestQueue((Objects.requireNonNull(getActivity())));
 
         toolbar = (Toolbar) rootView.findViewById(R.id.tool_barz);
-        mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         retry_box= rootView.findViewById(R.id.retry_box);
+        loading_anim = rootView.findViewById(R.id.loading_anim);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         mTitle.setText("My Deals");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
-
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
          newsViewpager = rootView.findViewById(R.id.news_swipe);
         IntentFilter intentFilter = new
@@ -147,14 +149,17 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
             }
         });
 
+
+        newsViewpager.setPageTransformer(new DepthPageTransformer());
+        newsViewpager.setAdapter(newsAdapter);
+        parseJson();
+
+        loadNativeAds();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show(); //call function!
         int TIME = 4000;
         new Handler().postDelayed(() -> {
             ((AppCompatActivity)getActivity()).getSupportActionBar().hide(); //call function!
         }, TIME);
-        newsViewpager.setPageTransformer(new DepthPageTransformer());
-        newsViewpager.setAdapter(newsAdapter);
-        parseJson();
-        loadNativeAds();
         return rootView;
     }
     @Override
@@ -165,9 +170,9 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     }
     private void refresh_now(){
 
+        loading_anim.setVisibility(View.VISIBLE);
         retry_box.setVisibility(View.GONE);
         newsAdapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(true);
         parseJson();
         loadNativeAds();
     }
@@ -260,10 +265,12 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     private void parseJson() {
         retry_box.setVisibility(View.GONE);
         mNewsList.clear();
+        newsAdapter.notifyDataSetChanged();
         String url = getString(R.string.server_website);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
+            mNewsList.clear();
                     try {
                         JSONArray jsonArray = response.getJSONArray("server_response");
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -280,17 +287,25 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
 
                             mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video));
                         }
+
+                        loading_anim.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
-                        newsAdapter.notifyDataSetChanged();
+
                     } catch (JSONException e) {
                         e.printStackTrace();
+
                     }
+                    newsAdapter.notifyDataSetChanged();
                 }, volleyError -> {
             swipeRefreshLayout.setRefreshing(false);
             retry_box.setVisibility(View.VISIBLE);
 
 
         });
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                4000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(request);
     }
     @Override
@@ -338,52 +353,14 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
 
 
     }
-    public class DepthPageTransformer implements ViewPager2.PageTransformer {
-        private static final float MIN_SCALE = 0.95f;
-        private static final float MIN_FADE = 0.8f;
 
-        public void transformPage(View view, float position) {
-            int pageWidth = view.getWidth();
-            int pageHeight = view.getHeight();
-            if (position < -1) { // [-Infinity,-1)
-
-            } else if (position <= 0) { // [-1,0]
-                ViewCompat.setTranslationZ(view, position);
-
-                view.setTranslationY(1f);
-                view.setScaleX(1f);
-                view.setScaleY(1f);
-            } else if (position <= 1) { // (0,1]
-                // Fade the page out.
-                ViewCompat.setTranslationZ(view, pageHeight *-position);
-
-                // Counteract the default slide transition
-                view.setTranslationY(pageHeight *-position);
-
-                // Scale the page down (between MIN_SCALE and 1)
-                float scaleFactor = MIN_SCALE
-                        + (1 - MIN_SCALE) * (1 - Math.abs(position));
-                view.setScaleX(scaleFactor);
-                view.setScaleY(scaleFactor);
-
-            } else if(position==0){
-                ViewCompat.setTranslationZ(view, 0);
-                view.setTranslationX(0);
-                view.setScaleX(1);
-                view.setScaleY(1);
-
-            }
-            else{
-            }
-        }
-    }
     public void shareNormal(int position,Bitmap bitmap){
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         final Bitmap b = drawToBitmap(getContext(),R.layout.news_share, metrics.widthPixels,
                 metrics.heightPixels,position,bitmap);
         saveBitmap(b);
         normalShareIntent(position);
-        Toast.makeText(getContext(),"Share Normal",Toast.LENGTH_SHORT).show();
+
     }
     public void shareWhats(int position,Bitmap bitmap){
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -391,7 +368,6 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                 metrics.heightPixels,position,bitmap);
         saveBitmap(b);
         whatsappShareIntent(position);
-        Toast.makeText(getContext(),"Share Whatsapp",Toast.LENGTH_SHORT).show();
     }
 
     private void normalShareIntent(int position){

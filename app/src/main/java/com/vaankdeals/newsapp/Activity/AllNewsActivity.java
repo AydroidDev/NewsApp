@@ -3,19 +3,32 @@ package com.vaankdeals.newsapp.Activity;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 import spencerstudios.com.bungeelib.Bungee;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,20 +38,26 @@ import com.android.volley.toolbox.Volley;
 import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.Adapter.AllNewsAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
-import com.vaankdeals.newsapp.Class.ZoomOutPageTransformer;
+import com.vaankdeals.newsapp.Class.DepthPageTransformer;
+import com.vaankdeals.newsapp.Fragment.NewsFragment;
 import com.vaankdeals.newsapp.Model.AllNewsModel;
 import com.vaankdeals.newsapp.Model.NewsBook;
 
-import com.vaankdeals.newsapp.Model.AllNewsModel;
+import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter.videoClickListenerAll,AllNewsAdapter.newsOutListenerAll,AllNewsAdapter.whatsClickListenerAll,AllNewsAdapter.shareClickListenerAll,AllNewsAdapter.bookmarkListenerAll,AllNewsAdapter.actionbarListenerAll {
    
@@ -47,41 +66,94 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
     private List<Object> mNewsList = new ArrayList<>() ;
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
-
-
+    private File imagePathz;
+    String news_cat;
+    ViewPager2 newsViewpager;
+    ProgressBar progress_all;
+    SwipeRefreshLayout swipeRefreshLayout;
+    Toolbar toolbar;
+    RelativeLayout retry_box;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_news);
 
         Slidr.attach(this);
-        getSupportActionBar().hide();
         mRequestQueue = Volley.newRequestQueue(this);
+        retry_box= findViewById(R.id.retry_box_all);
 
+        swipeRefreshLayout= findViewById(R.id.activity_all_refresh);
         Bundle bundle = getIntent().getExtras();
-        String news_cat = bundle.getString("news_cat");
-
-
-
-
-        ViewPager2 newsViewpager = findViewById(R.id.news_swipe_all);
+        news_cat = bundle.getString("news_cat");
+         newsViewpager = findViewById(R.id.news_swipe_all);
         newsAdapter = new AllNewsAdapter(this,mNewsList);
-
-        newsViewpager.setPageTransformer(new ZoomOutPageTransformer());
+         toolbar = findViewById(R.id.tool_bar_all);
+         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(news_cat);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        getSupportActionBar().hide();
+        progress_all=findViewById(R.id.progress_all);
+        newsViewpager.setPageTransformer(new DepthPageTransformer());
         newsViewpager.setAdapter(newsAdapter);
         newsAdapter.setvideoClickListenerAll(AllNewsActivity.this);
         newsAdapter.setnewsOutListenerAll(AllNewsActivity.this);
         newsAdapter.setshareClickListenerAll(AllNewsActivity.this);
         newsAdapter.setwhatsClickListenerAll(AllNewsActivity.this);
         newsAdapter.setbookmarkListenerAll(AllNewsActivity.this);
+        swipeRefreshLayout.setOnRefreshListener(this::refresh_now);
+        newsViewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+
+                if(positionOffsetPixels>0){
+
+                    toolbar.animate()
+                            .setDuration(150)
+                            .translationY(0);
+                    getSupportActionBar().hide();
+                }
+
+            }
+        });
         newsAdapter.setactionbarListenerAll(AllNewsActivity.this);
         parseJson(news_cat);
+    }
+    private void refresh_now(){
+
+        progress_all.setVisibility(View.VISIBLE);
+        retry_box.setVisibility(View.GONE);
+        newsAdapter.notifyDataSetChanged();
+        parseJson(news_cat);
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            case R.id.action_up_home:
+                newsViewpager.setCurrentItem(0,true);
+                return true;
+            case R.id.refresh:
+                refresh_now();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
 
-
     private void parseJson(String newsCat) {
+        retry_box.setVisibility(View.GONE);
+        mNewsList.clear();
         String url = getString(R.string.server_website_all)+"?news_cat="+newsCat;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -104,16 +176,16 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
                         }
                         // Just call notifyDataSetChanged here
 
+                        progress_all.setVisibility(View.GONE);
                         newsAdapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                }, volleyError ->{
+                    swipeRefreshLayout.setRefreshing(false);
+                    retry_box.setVisibility(View.VISIBLE);
+                });
         mRequestQueue.add(request);
     }
 
@@ -164,13 +236,100 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
 
 
     }
-    public void shareNormalAll(int position){
-        Toast.makeText(this,"Share Normal",Toast.LENGTH_SHORT).show();
+    public void shareNormalAll(int position,Bitmap bitmap){
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final Bitmap b = drawToBitmap(this,R.layout.news_share, metrics.widthPixels,
+                metrics.heightPixels,position,bitmap);
+        saveBitmap(b);
+        normalShareIntent(position);
     }
-    public void shareWhatsAll(int position){
-        Toast.makeText(this,"Share Whatsapp",Toast.LENGTH_SHORT).show();
+    public void shareWhatsAll(int position,Bitmap bitmap){
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final Bitmap b = drawToBitmap(this,R.layout.news_share, metrics.widthPixels,
+                metrics.heightPixels,position,bitmap);
+        saveBitmap(b);
+        whatsappShareIntent(position);
     }
+    private void normalShareIntent(int position){
 
+        Uri imgUri = Uri.parse(imagePathz.getAbsolutePath());
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "The text you wanted to share");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+        shareIntent.setType("image/jpeg");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(shareIntent);
+    }
+    private void whatsappShareIntent(int position){
+        Uri imgUri = Uri.parse(imagePathz.getAbsolutePath());
+        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+        whatsappIntent.setType("text/plain");
+        whatsappIntent.setPackage("com.whatsapp");
+        whatsappIntent.putExtra(Intent.EXTRA_TEXT, "The text you wanted to share");
+        whatsappIntent.putExtra(Intent.EXTRA_STREAM, imgUri);
+        whatsappIntent.setType("image/jpeg");
+        whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+
+        try {
+            startActivity(whatsappIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this,"Whatsapp have not been installed.",Toast.LENGTH_SHORT).show(); }
+
+    }
+    public  Bitmap drawToBitmap(Context context, int layoutResId,
+                                int width, int height, int position, Bitmap bitmap)
+    {
+        final Bitmap bmp = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bmp);
+        final LayoutInflater inflater =
+                (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(layoutResId,null);
+        ImageView newsimage= layout.findViewById(R.id.news_image_share);
+        TextView newshead = layout.findViewById(R.id.news_head_share);
+        TextView newsdesc= layout.findViewById(R.id.news_desc_share);
+        NewsModel currentItem= (NewsModel) mNewsList.get(position);
+        newsimage.setImageBitmap(bitmap);
+        newshead.setText(currentItem.getmNewsHead());
+        newsdesc.setText(currentItem.getmNewsDesc());
+        layout.measure(
+                View.MeasureSpec.makeMeasureSpec(canvas.getWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(canvas.getHeight(), View.MeasureSpec.EXACTLY));
+        layout.layout(0,0,layout.getMeasuredWidth(),layout.getMeasuredHeight());
+        layout.draw(canvas);
+        return bmp;
+    }
+    public void saveBitmap(Bitmap bitmap) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Random rnd = new Random();
+        int nameshare = 100000 + rnd.nextInt(900000);
+        Bitmap result = Bitmap.createBitmap(w, h, bitmap.getConfig());
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        Bitmap waterMark = BitmapFactory.decodeResource(this.getResources(), R.drawable.waterbottom);
+        canvas.drawBitmap(waterMark, 0, 1100, null);
+        String folderpath = Environment.getExternalStorageDirectory() + "/NewsApp";
+        File folder = new File(folderpath);
+        if(!folder.exists()){
+            File wallpaperDirectory = new File(folderpath);
+            wallpaperDirectory.mkdirs();
+        }
+        imagePathz = new File(Environment.getExternalStorageDirectory() +"/NewsApp/SharedNews"+nameshare+".png");
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(imagePathz);
+            result.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.e("GREC", e.getMessage(), e);
+        } catch (IOException e) {
+            Log.e("GREC", e.getMessage(), e);
+        }
+    }
     public void bookmarkAllAll(int position){
         AllNewsModel clickeditem = (AllNewsModel) mNewsList.get(position);
         if(clickeditem.getmNewsType().equals("1")){

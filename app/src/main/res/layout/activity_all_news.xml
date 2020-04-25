@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#000"
+    android:background="#fff"
+    android:id="@+id/activity_all_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.AllNewsActivity">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/progress_all"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
+        android:animateLayoutChanges="true"
+        android:layout_height="wrap_content"
+        android:background="#f5f7fa"
+        android:elevation="0dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
+        <include
+            android:id="@+id/tool_bar_all"
+            layout="@layout/toolbar_new" />
+    </com.google.android.material.appbar.AppBarLayout>
+        <RelativeLayout
+            android:id="@+id/retry_box_all"
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <include
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                layout="@layout/no_internet" />
+
+
+        </RelativeLayout>
     <androidx.viewpager2.widget.ViewPager2
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,5 +48,5 @@
         />
 
 
-
-</FrameLayout>
+    </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
