@@ -219,7 +219,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="18dp"
                     android:layout_marginTop="10dp"
                     app:columnCount="3"
                     app:rowCount="5">
@@ -230,7 +230,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="india"
-                        android:layout_marginStart="-7dp"
+                        android:layout_marginStart="0dp"
                         android:foreground="?attr/selectableItemBackground"
                         android:background="@drawable/india"/>
 
@@ -239,7 +239,7 @@
                         android:tag="business"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
+                        android:layout_marginStart="7dp"
                         android:foreground="?attr/selectableItemBackground"
                         android:background="@drawable/business"/>
 
@@ -248,7 +248,7 @@
                         android:tag="politics"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
+                        android:layout_marginStart="7dp"
                         android:background="@drawable/politics"/>
 
                     <Button
@@ -256,7 +256,8 @@
                         android:tag="sports"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/sports"/>
 
                     <Button
@@ -264,7 +265,8 @@
                         android:tag="technology"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/technology"/>
 
                     <Button
@@ -272,7 +274,8 @@
                         android:tag="entertainment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/entertainment"/>
 
                     <Button
@@ -280,7 +283,8 @@
                         android:tag="international"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/international"/>
 
                     <Button
@@ -288,7 +292,8 @@
                         android:tag="automobile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/automobile"/>
 
                     <Button
@@ -296,7 +301,8 @@
                         android:tag="science"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/science"/>
 
                     <Button
@@ -304,7 +310,8 @@
                         android:tag="fashion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="-7dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/fashion"/>
 
                     <Button
@@ -312,7 +319,8 @@
                         android:tag="travel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginTop="7dp"
                         android:background="@drawable/travel"/>
 
 
