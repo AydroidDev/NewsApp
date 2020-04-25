@@ -26,7 +26,7 @@
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".Activity.NewsActivity"
-            android:theme="@style/AppTheme.SlidrActivityTheme.ActionBar" />
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".Activity.VideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

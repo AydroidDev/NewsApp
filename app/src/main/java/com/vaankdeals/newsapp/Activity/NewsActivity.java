@@ -10,6 +10,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,12 +25,10 @@ import java.net.URL;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import im.delight.android.webview.AdvancedWebView;
 
-public class NewsActivity extends AppCompatActivity implements AdvancedWebView.Listener {
-    private AdvancedWebView mWebView;
+public class NewsActivity extends AppCompatActivity {
     private ProgressBar progressBar;
-    @SuppressLint("InflateParams")
+    @SuppressLint({"InflateParams", "SetJavaScriptEnabled"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,70 +73,25 @@ public class NewsActivity extends AppCompatActivity implements AdvancedWebView.L
         assert url != null;
         String host = url.getHost();
         activity_sub_title.setText(host);
-        mWebView = findViewById(R.id.webview);
-        mWebView.setListener(this, this);
+        WebView mWebView = findViewById(R.id.webview);
         getSupportActionBar().setTitle(mCaption);
+        mWebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl(request.toString());
+                return true;
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
+        mWebView.getSettings().setDomStorageEnabled(true);
+        mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(mUrl);
     }
-    @SuppressLint("NewApi")
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mWebView.onResume();
-        // ...
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    protected void onPause() {
-        mWebView.onPause();
-        // ...
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mWebView.onDestroy();
-        // ...
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        mWebView.onActivityResult(requestCode, resultCode, intent);
-        // ...
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!mWebView.onBackPressed()) { return; }
-        // ...
-        super.onBackPressed();
-    }
-
-    @Override
-    public void onPageStarted(String url, Bitmap favicon) {
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setProgress(0);
-    }
-
-    @Override
-    public void onPageFinished(String url) {
-        progressBar.setVisibility(View.GONE);
-        progressBar.setProgress(100);
-    }
-
-    @Override
-    public void onPageError(int errorCode, String description, String failingUrl) { }
-
-    @Override
-    public void onDownloadRequested(String url, String suggestedFilename, String mimeType, long contentLength, String contentDisposition, String userAgent) { }
-
-    @Override
-    public void onExternalPageRequest(String url) { }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

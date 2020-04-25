@@ -10,28 +10,22 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Model.AllNewsModel;
 import com.vaankdeals.newsapp.R;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<Object> mNewsList =  new ArrayList<>();
+    private List<Object> mNewsList;
     private static final int NEWS_IMAGE_TYPE = 0;
     private static final int VIDEO_NEWS_TYPE = 5;
 
@@ -251,10 +245,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 }
             });
-            mLayout.setOnClickListener(v -> {
-
-                    mActionbarListenerAll.actionBarViewAll();
-            });
+            mLayout.setOnClickListener(v -> mActionbarListenerAll.actionBarViewAll());
         }
     }
     public class NewsVideoViewHolder extends RecyclerView.ViewHolder{
@@ -269,7 +260,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Button mBookmarkButton;
         LinearLayout mLayout;
 
-        public NewsVideoViewHolder(@NonNull View itemView) {
+        private NewsVideoViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mNewsVideoHead = itemView.findViewById(R.id.news_video_head);
@@ -321,10 +312,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 }
             });
-            mLayout.setOnClickListener(v -> {
-
-                mActionbarListenerAll.actionBarViewAll();
-            });
+            mLayout.setOnClickListener(v -> mActionbarListenerAll.actionBarViewAll());
         }
 
 

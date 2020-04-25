@@ -31,25 +31,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.Adapter.AllNewsAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Class.DepthPageTransformer;
-import com.vaankdeals.newsapp.Fragment.NewsFragment;
 import com.vaankdeals.newsapp.Model.AllNewsModel;
 import com.vaankdeals.newsapp.Model.NewsBook;
-
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -128,7 +122,6 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
         parseJson(news_cat);
     }
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
@@ -148,9 +141,6 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-
     private void parseJson(String newsCat) {
         retry_box.setVisibility(View.GONE);
         mNewsList.clear();
@@ -188,10 +178,6 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
                 });
         mRequestQueue.add(request);
     }
-
-
-
-
     public void videoActivityAll(int position) {
         AllNewsModel clickeditem = (AllNewsModel) mNewsList.get(position);
         String url = clickeditem.getmNewsVideo();
@@ -233,8 +219,6 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
         else {
             Toast.makeText(this,"Full News Not Available",Toast.LENGTH_SHORT).show();
         }
-
-
     }
     public void shareNormalAll(int position,Bitmap bitmap){
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
