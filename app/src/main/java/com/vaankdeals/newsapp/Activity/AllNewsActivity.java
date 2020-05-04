@@ -335,8 +335,6 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
         int recount = cursor.getCount();
 
         if(recount <= 0){
-
-
             db.addContact(new NewsBook(0,clickeditem.getmNewsHead(),clickeditem.getmNewsDesc(),
                     clickeditem.getmNewsImage(),clickeditem.getmNewsSource(),clickeditem.getmNewsDay(),
                     clickeditem.getmNewslink(),clickeditem.getmNewsId(),

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#80000000"
+    android:id="@+id/news_video_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="5dp"
+        app:cardElevation="0dp"
+        android:layout_marginEnd="0dp"
+        app:cardCornerRadius="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="255dp">
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/youtube_player_view"
+        android:layout_width="match_parent"
+        android:layout_height="255dp"
+        app:showFullScreenButton="false"
+        app:showYouTubeButton="false"/>
+</FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:minLines="2"
+                android:maxLines="2"
+                android:id="@+id/news_video_head"
+                android:fontFamily="@font/robotomedium"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@drawable/headcolor"
+                android:textSize="17sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Converse College closed for classes due to COVID-19"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/news_video_desc"
+                android:fontFamily="@font/robotlight                          "
+                android:lineSpacingExtra="4dp"
+                android:maxLines="9"
+                android:textColor="#616161"
+                android:textSize="15sp"
+                android:layout_marginTop="6sp"
+                android:layout_marginStart="14dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Converse has previously partnered with 'TheSoloist.' on three drops, with Japanese founder Takahiro Miyashita, known for his bold designs, made to stand out. The two brands have collaborated on previous drops including the ERX 260 Hi and the VLTG Mission-V collection. For its latest Converse X TheSoloist collaboration, the duo partner for the"/>
+
+
+            <TextView
+                android:id="@+id/news_video_extra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#E0E0E0"
+                android:fontFamily="@font/roboto"
+                android:textSize="12sp"
+                android:layout_marginTop="6sp"
+                android:layout_marginStart="14dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+
+                android:text="Click on the heading to read more"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginBottom="25dp"
+                android:gravity="bottom|center_horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/video_bookmark_button"
+                android:layout_width="19dp"
+                android:layout_height="26dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_marginEnd="190dp"
+                android:background="@drawable/bookmark_button" />
+
+
+            <Button
+                android:id="@+id/video_sharewhats"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/share_whats_button" />
+
+            <Button
+                android:id="@+id/video_sharecard"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:background="@drawable/share_button" />
+        </LinearLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

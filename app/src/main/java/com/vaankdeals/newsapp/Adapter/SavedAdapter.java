@@ -3,7 +3,9 @@ package com.vaankdeals.newsapp.Adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +17,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Model.NewsBook;
+import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +39,7 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<NewsBook> mNewsList;
     private static final int NEWS_IMAGE_TYPE = 0;
     private static final int VIDEO_NEWS_TYPE = 5;
-
+    private static final int YT_VIDEO_NEWS_TYPE = 6;
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
 
@@ -100,6 +108,9 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 View videoView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.newsvideoitem, viewGroup, false);
                 return new NewsVideoViewHolder(videoView);
 
+            case YT_VIDEO_NEWS_TYPE:
+                View ytVideoView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.newsytvideoitem, viewGroup, false);
+                return new YtNewsVideoViewHolder(ytVideoView);
 
 
 
@@ -117,6 +128,8 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     return NEWS_IMAGE_TYPE;
                 case "5":
                     return VIDEO_NEWS_TYPE;
+                case "6":
+                    return YT_VIDEO_NEWS_TYPE;
                 default:
                     return -1;
             }
@@ -194,6 +207,42 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Glide.with(mContext).load(news_image_video).into(newsVideoViewHolder.mNewsVideoImage);
                 break;
 
+            case YT_VIDEO_NEWS_TYPE:
+                NewsBook yt_video_news = (NewsBook) mNewsList.get(position);
+                YtNewsVideoViewHolder ytNewsVideoViewHolder = (YtNewsVideoViewHolder) holder;
+
+                String news_video_yt_video =yt_video_news.getmNewsVideo();
+                String product_id_yt_video =yt_video_news.getmNewsId();
+                String news_head_yt_video = yt_video_news.getmNewsHead();
+                String news_desc_yt_video = yt_video_news.getmNewsDesc();
+                String news_source_yt_video = yt_video_news.getmNewsSource();
+                String news_day_yt_video = yt_video_news.getmNewsDay();
+                String news_extra_yt_video = "click on title to read more on " + news_source_yt_video + " / " + news_day_yt_video;
+
+                String vId=getVideoIdFromYoutubeUrl(news_video_yt_video);
+                DatabaseHandler dbVideoyt = new DatabaseHandler(mContext);
+                String countQueryVideoyt = "SELECT  * FROM " + TABLE_NEWS + " where " + NEWS_ID +  " = " + product_id_yt_video;
+                SQLiteDatabase dbsVideoyt = dbVideoyt.getReadableDatabase();
+                Cursor cursorVideoyt = dbsVideoyt.rawQuery(countQueryVideoyt, null);
+                int recountVideoyt = cursorVideoyt.getCount();
+                if(recountVideoyt <= 0){
+                    ytNewsVideoViewHolder.mBookmarkButton.setBackgroundResource(R.drawable.bookmark_button);
+                }
+                else {
+                    ytNewsVideoViewHolder.mBookmarkButton.setBackgroundResource(R.drawable.bookmark_button_clicked);
+                }
+                cursorVideoyt.close();
+
+                ytNewsVideoViewHolder.youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                    @Override
+                    public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                        youTubePlayer.loadVideo(vId, 0);
+                    }
+                });
+                ytNewsVideoViewHolder.mNewsVideoExtra.setText(news_extra_yt_video);
+                ytNewsVideoViewHolder.mNewsVideoHead.setText(news_head_yt_video);
+                ytNewsVideoViewHolder.mNewsVideoDesc.setText(news_desc_yt_video);
+                break;
         }
     }
     public class NewsViewHolder extends RecyclerView.ViewHolder {
@@ -318,15 +367,79 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 mActionbarListenerAll.actionBarViewAll();
             });
         }
-
-
     }
-    
+    public class YtNewsVideoViewHolder extends RecyclerView.ViewHolder{
+
+        YouTubePlayerView youTubePlayerView;
+        TextView mNewsVideoHead;
+        TextView mNewsVideoDesc;
+        ImageView mNewsVideoImage;
+        TextView mNewsVideoExtra;
+        ImageView mNewsVideoPlay;
+        Button mShareButton;
+        Button mWhatsButton;
+        Button mBookmarkButton;
+        LinearLayout mLayout;
+
+        YtNewsVideoViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            youTubePlayerView =itemView.findViewById(R.id.youtube_player_view);
+            mNewsVideoHead = itemView.findViewById(R.id.news_video_head);
+            mNewsVideoDesc = itemView.findViewById(R.id.news_video_desc);
+            mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
+            mNewsVideoPlay = itemView.findViewById(R.id.video_play);
+            mShareButton = itemView.findViewById(R.id.video_sharecard);
+            mWhatsButton = itemView.findViewById(R.id.video_sharewhats);
+            mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
+            mLayout = itemView.findViewById(R.id.news_video_item);
+
+            mShareButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mShareClickListener.shareNormal(position);
+
+                }
+            });
+            mWhatsButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    mWhatsClickListener.shareWhats(position);
+
+                }
+            });
+            mNewsVideoHead.setOnClickListener(v -> {
+                mNewsOutListener.newsDetailActivity(getAdapterPosition());
+            });
+            mBookmarkButton.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mBookmarkListener.bookmarkAll(position);
+
+                }
+            });
+            mLayout.setOnClickListener(v -> {
+
+                mActionbarListenerAll.actionBarViewAll();
+            });
+        }
+    }
     @Override
     public int getItemCount() {
         return mNewsList.size();
     }
-
-
-
+    public String getVideoIdFromYoutubeUrl(String url){
+        String videoId = null;
+        String regex = "http(?:s)?:\\/\\/(?:m.)?(?:www\\.)?youtu(?:\\.be\\/|be\\.com\\/(?:watch\\?(?:feature=youtu.be\\&)?v=|v\\/|embed\\/|user\\/(?:[\\w#]+\\/)+))([^&#?\\n]+)";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(url);
+        if(matcher.find()){
+            videoId = matcher.group(1);
+        }
+        return videoId;
+    }
 }

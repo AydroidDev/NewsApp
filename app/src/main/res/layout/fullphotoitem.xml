@@ -17,10 +17,12 @@
         app:cardCornerRadius="12dp">
 <Button
     android:id="@+id/sharebuttoncard"
-    android:layout_width="match_parent"
-    android:layout_height="300dp"
-    android:layout_gravity="bottom"
-    android:background="@null"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:layout_marginEnd="30dp"
+    android:layout_marginTop="40dp"
+    android:layout_gravity="center_vertical|end"
+    android:background="@drawable/share_button"
     />
     <ImageView
         android:id="@+id/fullimage"
