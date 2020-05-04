@@ -35,6 +35,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int NEWS_IMAGE_TYPE = 0;
     private static final int VIDEO_NEWS_TYPE = 5;
     private static final int YT_VIDEO_NEWS_TYPE = 6;
+    private YouTubePlayer initializedYouTubePlayer;
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
@@ -45,6 +46,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private whatsClickListenerAll mWhatsClickListenerAll;
     private bookmarkListenerAll mBookmarkListenerAll;
     private actionbarListenerAll mActionbarListenerAll;
+    private YouTubePlayer youTubePlayer;
     public interface actionbarListenerAll{
         void actionBarViewAll();
     }
@@ -228,12 +230,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 cursorVideoyt.close();
 
-                ytNewsVideoViewHolder.youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-                    @Override
-                    public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                        youTubePlayer.loadVideo(vId, 0);
-                    }
-                });
+               ytNewsVideoViewHolder.cueVideo(vId);
                 ytNewsVideoViewHolder.mNewsVideoExtra.setText(news_extra_yt_video);
                 ytNewsVideoViewHolder.mNewsVideoHead.setText(news_head_yt_video);
                 ytNewsVideoViewHolder.mNewsVideoDesc.setText(news_desc_yt_video);
@@ -321,9 +318,6 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
             mLayout = itemView.findViewById(R.id.news_video_item);
 
-
-
-
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -375,6 +369,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Button mWhatsButton;
         Button mBookmarkButton;
         LinearLayout mLayout;
+        String currentVideoId;
 
         YtNewsVideoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -389,6 +384,15 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
             mLayout = itemView.findViewById(R.id.news_video_item);
 
+            youTubePlayerView.enableBackgroundPlayback(false);
+            youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(@NonNull YouTubePlayer initializedYouTubePlayer) {
+                    youTubePlayer=initializedYouTubePlayer;
+                    youTubePlayer.cueVideo(currentVideoId, 0);
+                }
+
+            });
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -422,6 +426,13 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mActionbarListenerAll.actionBarViewAll();
             });
         }
+        void cueVideo(String videoId) {
+            currentVideoId = videoId;
+            if(youTubePlayer == null)
+                return;
+
+            youTubePlayer.cueVideo(videoId, 0);
+        }
     }
 
     @Override
@@ -437,5 +448,10 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             videoId = matcher.group(1);
         }
         return videoId;
+    }
+    public  void pauseYtVid(){
+        //video still playing on background after scroll even if autoplay=false
+        if(youTubePlayer!=null)
+            youTubePlayer.pause();
     }
 }

@@ -18,14 +18,13 @@ import android.widget.Toast;
 
 
 import com.r0adkll.slidr.Slidr;
+import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Adapter.SavedAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Class.DepthPageTransformer;
 import com.vaankdeals.newsapp.Model.NewsBook;
-import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 import java.util.List;
-import java.util.Objects;
 
 public class SavedActivity extends AppCompatActivity implements SavedAdapter.videoClickListener,SavedAdapter.newsOutListener,SavedAdapter.whatsClickListener,SavedAdapter.shareClickListener,SavedAdapter.bookmarkListener,SavedAdapter.actionbarListenerAll {
 
@@ -59,6 +58,25 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
         newsAdapter.setbookmarkListener(this);
         newsAdapter.setactionbarListenerAll(this);
 
+        newsViewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                if(positionOffsetPixels>0){
+
+                    toolbar.animate()
+                            .setDuration(150)
+                            .translationY(0);
+                    getSupportActionBar().hide();
+                }
+
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                ((SavedAdapter)newsViewpager.getAdapter()).pauseYtVid();
+            }
+        });
     }
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

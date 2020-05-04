@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.formats.NativeAd;
@@ -26,6 +27,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
@@ -52,9 +54,11 @@ import androidx.recyclerview.widget.RecyclerView;
     private static final int CUSTOM_AD_TYPE = 4;
     private static final int VIDEO_NEWS_TYPE = 5;
      private static final int YT_VIDEO_NEWS_TYPE = 6;
+     private YouTubePlayer youTubePlayer;
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
+
 
     private newsOutListener mNewsOutListener;
     private videoClickListener mVideoClickListener;
@@ -113,7 +117,6 @@ import androidx.recyclerview.widget.RecyclerView;
         this.mNewsList = mNewsList;
         this.mContext = context;
     }
-
 
     @NonNull
     @Override
@@ -282,13 +285,7 @@ import androidx.recyclerview.widget.RecyclerView;
                     ytNewsVideoViewHolder.mBookmarkButton.setBackgroundResource(R.drawable.bookmark_button_clicked);
                 }
                 cursorVideoyt.close();
-
-                ytNewsVideoViewHolder.youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-                    @Override
-                    public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                        youTubePlayer.loadVideo(vId, 0);
-                    }
-                });
+                ytNewsVideoViewHolder.cueVideo(vId);
                 ytNewsVideoViewHolder.mNewsVideoExtra.setText(news_extra_yt_video);
                 ytNewsVideoViewHolder.mNewsVideoHead.setText(news_head_yt_video);
                 ytNewsVideoViewHolder.mNewsVideoDesc.setText(news_desc_yt_video);
@@ -478,6 +475,9 @@ import androidx.recyclerview.widget.RecyclerView;
          Button mWhatsButton;
          Button mBookmarkButton;
          LinearLayout mLayout;
+         private String currentVideoId;
+
+
 
          YtNewsVideoViewHolder(@NonNull View itemView) {
              super(itemView);
@@ -491,14 +491,20 @@ import androidx.recyclerview.widget.RecyclerView;
              mWhatsButton = itemView.findViewById(R.id.video_sharewhats);
              mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
              mLayout = itemView.findViewById(R.id.news_video_item);
-
+             youTubePlayerView.enableBackgroundPlayback(false);
+             youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                 @Override
+                 public void onReady(@NonNull YouTubePlayer initializedYouTubePlayer) {
+                     youTubePlayer=initializedYouTubePlayer;
+                     youTubePlayer.cueVideo(currentVideoId, 0);
+                 }
+             });
              mShareButton.setOnClickListener(v -> {
                  int position = getAdapterPosition();
                  if (position != RecyclerView.NO_POSITION) {
                      BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
                      Bitmap bitmap = drawable.getBitmap();
                      mShareClickListener.shareNormal(position,bitmap);
-
                  }
              });
              mWhatsButton.setOnClickListener(v -> {
@@ -525,7 +531,16 @@ import androidx.recyclerview.widget.RecyclerView;
                  mActionbarListener.actionBarView();
              });
          }
+         void cueVideo(String videoId) {
+             currentVideoId = videoId;
+             if(youTubePlayer == null)
+                 return;
+
+             youTubePlayer.cueVideo(videoId, 0);
+         }
+
      }
+
     public class CustomAdViewHolder extends RecyclerView.ViewHolder{
 
          ImageView mNewsImage;
@@ -572,9 +587,6 @@ import androidx.recyclerview.widget.RecyclerView;
     public int getItemCount() {
         return mNewsList.size();
     }
-
-
-
     private void populateNativeAdView (UnifiedNativeAd nativeAd,
                                        UnifiedNativeAdView adView){
         // Some assets are guaranteed to be in every UnifiedNativeAd.
@@ -617,7 +629,8 @@ import androidx.recyclerview.widget.RecyclerView;
         // Assign native ad object to the native view.
         adView.setNativeAd(nativeAd);
     }
-     public String getVideoIdFromYoutubeUrl(String url){
+
+     private String getVideoIdFromYoutubeUrl(String url){
          String videoId = null;
          String regex = "http(?:s)?:\\/\\/(?:m.)?(?:www\\.)?youtu(?:\\.be\\/|be\\.com\\/(?:watch\\?(?:feature=youtu.be\\&)?v=|v\\/|embed\\/|user\\/(?:[\\w#]+\\/)+))([^&#?\\n]+)";
          Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -626,5 +639,10 @@ import androidx.recyclerview.widget.RecyclerView;
              videoId = matcher.group(1);
          }
          return videoId;
+     }
+     public  void pauseYtVid(){
+        //video still playing on background after scroll even if autoplay=false
+         if(youTubePlayer!=null)
+        youTubePlayer.pause();
      }
 }

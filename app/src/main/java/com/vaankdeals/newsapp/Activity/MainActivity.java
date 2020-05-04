@@ -7,10 +7,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Fragment.MenuFragment;
 import com.vaankdeals.newsapp.Fragment.NewsFragment;
 import com.vaankdeals.newsapp.R;
@@ -41,7 +43,23 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(newsFragment,"News");
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(1);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                ViewPager2 newsViewpager=newsViewpager = findViewById(R.id.news_swipe);
+                ((NewsAdapter)newsViewpager.getAdapter()).pauseYtVid();
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 

@@ -35,6 +35,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.Adapter.AllNewsAdapter;
+import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Class.DepthPageTransformer;
 import com.vaankdeals.newsapp.Model.AllNewsModel;
@@ -100,7 +101,6 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-
                 if(positionOffsetPixels>0){
 
                     toolbar.animate()
@@ -109,6 +109,11 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
                     getSupportActionBar().hide();
                 }
 
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                ((NewsAdapter)newsViewpager.getAdapter()).pauseYtVid();
             }
         });
         newsAdapter.setactionbarListenerAll(AllNewsActivity.this);

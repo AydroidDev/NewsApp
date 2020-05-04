@@ -133,10 +133,12 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         newsAdapter.setactionbarListener(NewsFragment.this);
          swipeRefreshLayout= (SwipeRefreshLayout) rootView.findViewById(R.id.newsSwipeLayout);
         swipeRefreshLayout.setOnRefreshListener(this::refresh_now);
+
         newsViewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+
 
                 if(positionOffsetPixels>0){
 
@@ -147,6 +149,13 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                 }
 
             }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                ((NewsAdapter)newsViewpager.getAdapter()).pauseYtVid();
+            }
+
+
         });
 
 
