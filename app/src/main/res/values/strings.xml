@@ -4,6 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="server_website">http://filmapp.000webhostapp.com/newsapp/json_news.php</string>
+    <string name="server_website_game">http://filmapp.000webhostapp.com/newsapp/json_game.php</string>
     <string name="server_website_all">http://filmapp.000webhostapp.com/newsapp/json_news_all.php</string>
     <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
     <string name="ad_unit_id_news_main">ca-app-pub-3940256099942544/2247696110</string>

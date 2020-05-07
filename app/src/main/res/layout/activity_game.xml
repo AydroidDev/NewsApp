@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.GameActivity"
+    android:background="#101010">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_game"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="200dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/imageContainer"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:text="Recently Played"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1"
+    >
+        <ImageView
+            android:id="@+id/gridimage1"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:scaleType="fitCenter"
+            android:layout_margin="10dp"
+            android:layout_weight="0.5"
+            android:src="@drawable/game_place"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            />
+            <ImageView
+                android:id="@+id/gridimage2"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:scaleType="fitCenter"
+                android:layout_weight="0.5"
+                android:layout_margin="10dp"
+                android:src="@drawable/game_place"
+                android:adjustViewBounds="true"
+                android:visibility="gone"
+                />
+</LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:text="All Games"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recycler_view"
+        />
+</LinearLayout>

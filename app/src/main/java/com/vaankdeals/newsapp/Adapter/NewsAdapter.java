@@ -46,7 +46,7 @@ import androidx.recyclerview.widget.RecyclerView;
  public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<Object> mNewsList =  new ArrayList<>();
+    private List<Object> mNewsList;
     private static final int NEWS_IMAGE_TYPE = 0;
     private static final int UNIFIED_NATIVE_AD_VIEW_TYPE = 1;
     private static final int FULL_IMAGE_TYPE = 2;
@@ -359,9 +359,7 @@ import androidx.recyclerview.widget.RecyclerView;
             mWhatsButton = itemView.findViewById(R.id.sharewhats);
             mBookmarkButton = itemView.findViewById(R.id.bookmark_button);
             mLayout = itemView.findViewById(R.id.news_item);
-            mNewsHead.setOnClickListener(v -> {
-                mNewsOutListener.newsDetailActivity(getAdapterPosition());
-            });
+            mNewsHead.setOnClickListener(v -> mNewsOutListener.newsDetailActivity(getAdapterPosition()));
 
             mShareButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -388,10 +386,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
                 }
             });
-            mLayout.setOnClickListener(v -> {
-
-                    mActionbarListener.actionBarView();
-            });
+            mLayout.setOnClickListener(v -> mActionbarListener.actionBarView());
         }
     }
     public class NewsVideoViewHolder extends RecyclerView.ViewHolder{
@@ -406,7 +401,7 @@ import androidx.recyclerview.widget.RecyclerView;
         Button mBookmarkButton;
         LinearLayout mLayout;
 
-        public NewsVideoViewHolder(@NonNull View itemView) {
+        NewsVideoViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mNewsVideoHead = itemView.findViewById(R.id.news_video_head);
@@ -447,9 +442,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
                 }
             });
-            mNewsVideoHead.setOnClickListener(v -> {
-                mNewsOutListener.newsDetailActivity(getAdapterPosition());
-            });
+            mNewsVideoHead.setOnClickListener(v -> mNewsOutListener.newsDetailActivity(getAdapterPosition()));
             mBookmarkButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -457,15 +450,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
                 }
             });
-            mLayout.setOnClickListener(v -> {
-
-                mActionbarListener.actionBarView();
-            });
+            mLayout.setOnClickListener(v -> mActionbarListener.actionBarView());
         }
     }
      public class YtNewsVideoViewHolder extends RecyclerView.ViewHolder{
-
-         YouTubePlayerView youTubePlayerView;
          TextView mNewsVideoHead;
          TextView mNewsVideoDesc;
          ImageView mNewsVideoImage;
@@ -479,10 +467,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 
+
          YtNewsVideoViewHolder(@NonNull View itemView) {
              super(itemView);
 
-             youTubePlayerView =itemView.findViewById(R.id.youtube_player_view);
+             YouTubePlayerView youTubePlayerView =itemView.findViewById(R.id.youtube_player_view);
              mNewsVideoHead = itemView.findViewById(R.id.news_video_head);
              mNewsVideoDesc = itemView.findViewById(R.id.news_video_desc);
              mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
@@ -491,7 +480,7 @@ import androidx.recyclerview.widget.RecyclerView;
              mWhatsButton = itemView.findViewById(R.id.video_sharewhats);
              mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
              mLayout = itemView.findViewById(R.id.news_video_item);
-             youTubePlayerView.enableBackgroundPlayback(false);
+
              youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                  @Override
                  public void onReady(@NonNull YouTubePlayer initializedYouTubePlayer) {
@@ -499,6 +488,7 @@ import androidx.recyclerview.widget.RecyclerView;
                      youTubePlayer.cueVideo(currentVideoId, 0);
                  }
              });
+
              mShareButton.setOnClickListener(v -> {
                  int position = getAdapterPosition();
                  if (position != RecyclerView.NO_POSITION) {
@@ -516,9 +506,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
                  }
              });
-             mNewsVideoHead.setOnClickListener(v -> {
-                 mNewsOutListener.newsDetailActivity(getAdapterPosition());
-             });
+             mNewsVideoHead.setOnClickListener(v -> mNewsOutListener.newsDetailActivity(getAdapterPosition()));
              mBookmarkButton.setOnClickListener(v -> {
                  int position = getAdapterPosition();
                  if (position != RecyclerView.NO_POSITION) {
@@ -526,10 +514,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
                  }
              });
-             mLayout.setOnClickListener(v -> {
-
-                 mActionbarListener.actionBarView();
-             });
+             mLayout.setOnClickListener(v -> mActionbarListener.actionBarView());
          }
          void cueVideo(String videoId) {
              currentVideoId = videoId;
@@ -563,10 +548,10 @@ import androidx.recyclerview.widget.RecyclerView;
     }
     public class FullImageViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView mNewsImage;
-
+        ImageView mNewsImage;
         Button mShareButton;
-        public FullImageViewHolder(@NonNull View itemView) {
+
+        FullImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mNewsImage = itemView.findViewById(R.id.fullimage);

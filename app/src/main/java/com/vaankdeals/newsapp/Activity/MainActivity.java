@@ -10,15 +10,13 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
-import android.view.Menu;
-
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Fragment.MenuFragment;
 import com.vaankdeals.newsapp.Fragment.NewsFragment;
 import com.vaankdeals.newsapp.R;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.viewTab);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         menuFragment = new MenuFragment();
         newsFragment = new NewsFragment();
@@ -46,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                ViewPager2 newsViewpager=newsViewpager = findViewById(R.id.news_swipe);
-                ((NewsAdapter)newsViewpager.getAdapter()).pauseYtVid();
+                ViewPager2 newsViewpager = findViewById(R.id.news_swipe);
+                ((NewsAdapter) Objects.requireNonNull(newsViewpager.getAdapter())).pauseYtVid();
             }
 
             @Override

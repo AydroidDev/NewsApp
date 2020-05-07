@@ -84,7 +84,7 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
         newsAdapter = new AllNewsAdapter(this,mNewsList);
          toolbar = findViewById(R.id.tool_bar_all);
          setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(news_cat);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(news_cat);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         getSupportActionBar().hide();
@@ -106,18 +106,23 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
                     toolbar.animate()
                             .setDuration(150)
                             .translationY(0);
-                    getSupportActionBar().hide();
+                    Objects.requireNonNull(getSupportActionBar()).hide();
                 }
 
             }
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
-                ((NewsAdapter)newsViewpager.getAdapter()).pauseYtVid();
+                ((AllNewsAdapter) Objects.requireNonNull(newsViewpager.getAdapter())).pauseYtVid();
             }
         });
         newsAdapter.setactionbarListenerAll(AllNewsActivity.this);
         parseJson(news_cat);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        newsAdapter.onDestroy();
     }
     private void refresh_now(){
 

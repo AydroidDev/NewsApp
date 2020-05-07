@@ -15,24 +15,22 @@ import android.view.MenuItem;
 
 import android.widget.Button;
 import android.widget.Toast;
-
-
 import com.r0adkll.slidr.Slidr;
-import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Adapter.SavedAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Class.DepthPageTransformer;
 import com.vaankdeals.newsapp.Model.NewsBook;
 import com.vaankdeals.newsapp.R;
 import java.util.List;
+import java.util.Objects;
 
 public class SavedActivity extends AppCompatActivity implements SavedAdapter.videoClickListener,SavedAdapter.newsOutListener,SavedAdapter.whatsClickListener,SavedAdapter.shareClickListener,SavedAdapter.bookmarkListener,SavedAdapter.actionbarListenerAll {
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
-    private SavedAdapter newsAdapter;
     private List<NewsBook> mSavedList;
     ViewPager2 newsViewpager;
+    SavedAdapter newsAdapter;
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +41,12 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
         DatabaseHandler db = new DatabaseHandler(this);
         mSavedList = db.getAllContacts();
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Bookmarks");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Bookmarks");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         getSupportActionBar().hide();
         ViewPager2 newsViewpager = findViewById(R.id.news_swipe_saved);
-        newsAdapter = new SavedAdapter(SavedActivity.this,mSavedList);
+         newsAdapter = new SavedAdapter(SavedActivity.this, mSavedList);
         newsViewpager.setPageTransformer(new DepthPageTransformer());
         newsViewpager.setAdapter(newsAdapter);
         newsAdapter.setvideoClickListener(SavedActivity.this);
@@ -67,14 +65,14 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
                     toolbar.animate()
                             .setDuration(150)
                             .translationY(0);
-                    getSupportActionBar().hide();
+                    Objects.requireNonNull(getSupportActionBar()).hide();
                 }
 
             }
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
-                ((SavedAdapter)newsViewpager.getAdapter()).pauseYtVid();
+                ((SavedAdapter) Objects.requireNonNull(newsViewpager.getAdapter())).pauseYtVid();
             }
         });
     }
@@ -102,7 +100,7 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
     }
     @Override
     public void videoActivity(int position) {
-        NewsBook clickeditem = (NewsBook) mSavedList.get(position);
+        NewsBook clickeditem = mSavedList.get(position);
         String url = clickeditem.getmNewsVideo();
         String pattern = "^(http(s)?:\\/\\/)?((w){3}.)?youtu(be|.be)?(\\.com)?\\/.+";
         if (!url.isEmpty() && url.matches(pattern))
@@ -116,21 +114,21 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
         }
     }
     private void youtubeActivity(int position){
-        NewsBook clickeditem = (NewsBook) mSavedList.get(position);
+        NewsBook clickeditem = mSavedList.get(position);
         Intent detailintent = new Intent(this, VideoActivity.class);
         detailintent.putExtra("yt_url", clickeditem.getmNewsVideo());
         startActivity(detailintent);
         Bungee.shrink(this);
     }
     private void exoPlayerActivity(int position){
-        NewsBook clickeditem = (NewsBook) mSavedList.get(position);
+        NewsBook clickeditem = mSavedList.get(position);
         Intent exoIntent = new Intent(this, ExoActivity.class);
         exoIntent.putExtra("st_url", clickeditem.getmNewsVideo());
         startActivity(exoIntent);
         Bungee.shrink(this);
     }
     public void newsDetailActivity(int position){
-        NewsBook clickeditem = (NewsBook) mSavedList.get(position);
+        NewsBook clickeditem = mSavedList.get(position);
         Intent newsIntent = new Intent(this, NewsActivity.class);
         newsIntent.putExtra("ns_url", clickeditem.getmNewslink());
         newsIntent.putExtra("ns_title", clickeditem.getmNewsHead());
@@ -145,7 +143,7 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
     }
 
     public void bookmarkAll(int position){
-        NewsBook clickeditem = (NewsBook) mSavedList.get(position);
+        NewsBook clickeditem = mSavedList.get(position);
         if(clickeditem.getmNewsType().equals("1")){
             final Button buttonNews = findViewById(R.id.bookmark_button);
             buttonNews.setBackgroundResource(R.drawable.bookmark_button_clicked);
@@ -184,7 +182,7 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
 
             }
             dbsw.delete(TABLE_NEWS, NEWS_ID + " = ?",
-                    new String[] { String.valueOf(fieldValue) });
+                    new String[] {fieldValue});
             Toast.makeText(this,"News Removed", Toast.LENGTH_SHORT).show();
         }
 
@@ -192,7 +190,11 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
 
 
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        newsAdapter.onDestroy();
+    }
     @Override
     public void actionBarViewAll() {
 

@@ -35,7 +35,8 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int NEWS_IMAGE_TYPE = 0;
     private static final int VIDEO_NEWS_TYPE = 5;
     private static final int YT_VIDEO_NEWS_TYPE = 6;
-    private YouTubePlayer initializedYouTubePlayer;
+    private YouTubePlayer youTubePlayer;
+    YouTubePlayerView youTubePlayerView;
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
@@ -46,7 +47,6 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private whatsClickListenerAll mWhatsClickListenerAll;
     private bookmarkListenerAll mBookmarkListenerAll;
     private actionbarListenerAll mActionbarListenerAll;
-    private YouTubePlayer youTubePlayer;
     public interface actionbarListenerAll{
         void actionBarViewAll();
     }
@@ -359,7 +359,6 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
     public class YtNewsVideoViewHolder extends RecyclerView.ViewHolder{
 
-        YouTubePlayerView youTubePlayerView;
         TextView mNewsVideoHead;
         TextView mNewsVideoDesc;
         ImageView mNewsVideoImage;
@@ -453,5 +452,8 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         //video still playing on background after scroll even if autoplay=false
         if(youTubePlayer!=null)
             youTubePlayer.pause();
+    }
+    public void onDestroy() {
+        youTubePlayerView.release();
     }
 }

@@ -49,6 +49,7 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private shareClickListener mShareClickListener;
     private whatsClickListener mWhatsClickListener;
     private bookmarkListener mBookmarkListener;
+    YouTubePlayerView youTubePlayerView;
     private actionbarListenerAll mActionbarListenerAll;;
     public interface actionbarListenerAll{
         void actionBarViewAll();
@@ -365,7 +366,6 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
     public class YtNewsVideoViewHolder extends RecyclerView.ViewHolder{
 
-        YouTubePlayerView youTubePlayerView;
         TextView mNewsVideoHead;
         TextView mNewsVideoDesc;
         ImageView mNewsVideoImage;
@@ -457,5 +457,8 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         //video still playing on background after scroll even if autoplay=false
         if(youTubePlayer!=null)
             youTubePlayer.pause();
+    }
+    public void onDestroy() {
+        youTubePlayerView.release();
     }
 }

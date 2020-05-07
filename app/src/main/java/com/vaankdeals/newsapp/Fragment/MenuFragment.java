@@ -13,11 +13,15 @@ import android.widget.Toast;
 
 
 import com.vaankdeals.newsapp.Activity.AllNewsActivity;
+import com.vaankdeals.newsapp.Activity.GameActivity;
+import com.vaankdeals.newsapp.Activity.NewsActivity;
 import com.vaankdeals.newsapp.Activity.SavedActivity;
+import com.vaankdeals.newsapp.Activity.WebActivity;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.R;
 
 import androidx.fragment.app.Fragment;
+import spencerstudios.com.bungeelib.Bungee;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +43,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
 
+        Button trending = rootView.findViewById(R.id.trending);
         Button india = rootView.findViewById(R.id.india);
         Button business = rootView.findViewById(R.id.business);
         Button politics = rootView.findViewById(R.id.politics);
@@ -51,6 +56,10 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         Button fashion = rootView.findViewById(R.id.fashion);
         Button travel = rootView.findViewById(R.id.travel);
 
+        trending.setOnClickListener(v -> {
+            Intent gameIntent = new Intent(getContext(), GameActivity.class);
+            startActivity(gameIntent);
+        });
         india.setOnClickListener(this);
         business.setOnClickListener(this);
         politics.setOnClickListener(this);
