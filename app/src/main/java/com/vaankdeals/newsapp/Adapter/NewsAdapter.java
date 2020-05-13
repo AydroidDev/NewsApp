@@ -678,8 +678,16 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             currentVideoIdFull = videoId;
             if (youTubePlayerFull == null)
                 return;
-            youTubePlayerFull.loadVideo(videoId,0);
 
+            youTubePlayerViewFull.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(YouTubePlayer initializedYoutubePlayer) {
+                    ytprogress.setVisibility(View.INVISIBLE);
+                    mPlay.setVisibility(View.VISIBLE);
+                    youTubePlayerFull = initializedYoutubePlayer;
+                    youTubePlayerFull.cueVideo(currentVideoIdFull,0);
+                }
+            });
         }
     }
      public class ReviewViewHolder extends RecyclerView.ViewHolder{
