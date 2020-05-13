@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,31 +20,32 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
+
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
-import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
+import com.vaankdeals.newsapp.Class.JzvdStdTikTok;
 import com.vaankdeals.newsapp.Class.UnifiedNativeAdViewHolder;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import cn.jzvd.JZDataSource;
+import cn.jzvd.Jzvd;
 
- public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private List<Object> mNewsList;
@@ -54,7 +56,15 @@ import androidx.recyclerview.widget.RecyclerView;
     private static final int CUSTOM_AD_TYPE = 4;
     private static final int VIDEO_NEWS_TYPE = 5;
      private static final int YT_VIDEO_NEWS_TYPE = 6;
+     private static final int FILM_REVIEW_TYPE = 7;
+     private static final int FULL_VIDEO_TYPE = 8;
+    private static final int FULL_YT_TYPE = 9;
      private YouTubePlayer youTubePlayer;
+    private YouTubePlayer youTubePlayerFull;
+
+    private JzvdStdTikTok jzvdStd;
+    private Fragment fragment;
+
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
@@ -66,6 +76,14 @@ import androidx.recyclerview.widget.RecyclerView;
     private whatsClickListener mWhatsClickListener;
     private adClickListener mAdClickListener;
     private bookmarkListener mBookmarkListener;
+    private reviewClickListener mReviewClickListener;
+     public interface reviewClickListener{
+         void reviewClick(int position);
+     }
+     public void setmReviewClickListener(reviewClickListener listener){
+         mReviewClickListener = listener;
+     }
+
     private actionbarListener mActionbarListener;
     public interface actionbarListener{
         void actionBarView();
@@ -113,9 +131,11 @@ import androidx.recyclerview.widget.RecyclerView;
         mBookmarkListener = listener;
     }
 
-    public NewsAdapter(Context context, List<Object> mNewsList) {
+    public NewsAdapter(Context context, List<Object> mNewsList,Fragment fragment) {
         this.mNewsList = mNewsList;
         this.mContext = context;
+        this.fragment=fragment;
+
     }
 
     @NonNull
@@ -143,6 +163,17 @@ import androidx.recyclerview.widget.RecyclerView;
             case WEBVIEW_TYPE:
                 View webView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.webview_item, viewGroup, false);
                 return new WebViewViewHolder(webView);
+
+            case FULL_YT_TYPE:
+                View fullyt = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fullytitem, viewGroup, false);
+                return new YtViewHolder(fullyt);
+
+            case FULL_VIDEO_TYPE:
+                View fullVideo = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fullvideoitem, viewGroup, false);
+                return new FullPlayerViewHolder(fullVideo);
+            case FILM_REVIEW_TYPE:
+                View filmReview = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.review_item, viewGroup, false);
+                return new ReviewViewHolder(filmReview);
 
             case CUSTOM_AD_TYPE:
                 View customAd = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.customad, viewGroup, false);
@@ -175,6 +206,12 @@ import androidx.recyclerview.widget.RecyclerView;
                     return VIDEO_NEWS_TYPE;
                 case "6":
                     return YT_VIDEO_NEWS_TYPE;
+                case "7":
+                    return FILM_REVIEW_TYPE;
+                case "8":
+                    return FULL_VIDEO_TYPE;
+                case "9":
+                    return FULL_YT_TYPE;
                 default:
                     return -1;
             }
@@ -222,6 +259,48 @@ import androidx.recyclerview.widget.RecyclerView;
 
                 String customadimage = customad.getmNewsImage();
                 Glide.with(mContext).load(customadimage).into(customAdViewHolder.mNewsImage);
+                break;
+            case FULL_YT_TYPE:
+                NewsModel ytfull = (NewsModel) mNewsList.get(position);
+                YtViewHolder ytViewHolder = (YtViewHolder) holder;
+
+                String yttitle =ytfull.getmNewsHead();
+                String ytid=ytfull.getmNewsVideo();
+                String vidId=getVideoIdFromYoutubeUrl(ytid);
+                String ytimage = ytfull.getmNewsImage();
+               ytViewHolder.cueVideoFull(vidId);
+                Glide.with(mContext).load(ytimage).into(ytViewHolder.mYtImage);
+                ytViewHolder.mYtTitle.setText(yttitle);
+                break;
+            case FULL_VIDEO_TYPE:
+                NewsModel fullvideo = (NewsModel) mNewsList.get(position);
+                FullPlayerViewHolder fullVideoViewHolder = (FullPlayerViewHolder) holder;
+
+                String videoUrl = fullvideo.getmNewsVideo();
+                String imageUrl = fullvideo.getmNewsImage();
+                JZDataSource jzDataSource = new JZDataSource(videoUrl,
+                        "test");
+                jzDataSource.looping=true;
+                Glide.with(jzvdStd.getContext()).load(imageUrl).apply(new RequestOptions().transform(new CenterCrop())).into(jzvdStd.posterImageView);
+                jzvdStd.setUp(jzDataSource, Jzvd.SCREEN_NORMAL);
+
+
+                break;
+            case FILM_REVIEW_TYPE:
+                NewsModel reviewFilm = (NewsModel) mNewsList.get(position);
+                ReviewViewHolder reviewViewHolder = (ReviewViewHolder) holder;
+
+                String reviewImage = reviewFilm.getmNewsImage();
+                String reviewHead = reviewFilm.getmNewsHead();
+                String reviewDesc = reviewFilm.getmNewsDesc();
+                String reviewRating = reviewFilm.getmNewsVideo();
+                String reviewGenre = reviewFilm.getmNewsSource();
+
+                reviewViewHolder.mReviewHead.setText(reviewHead);
+                reviewViewHolder.mReviewDesc.setText(reviewDesc);
+                reviewViewHolder.mReviewRating.setText(reviewRating);
+                reviewViewHolder.mReviewLink.setText(reviewGenre);
+                Glide.with(mContext).load(reviewImage).into(reviewViewHolder.mReviewImage);
                 break;
             case FULL_IMAGE_TYPE:
                 NewsModel image = (NewsModel) mNewsList.get(position);
@@ -453,7 +532,7 @@ import androidx.recyclerview.widget.RecyclerView;
             mLayout.setOnClickListener(v -> mActionbarListener.actionBarView());
         }
     }
-     public class YtNewsVideoViewHolder extends RecyclerView.ViewHolder{
+     public class YtNewsVideoViewHolder extends RecyclerView.ViewHolder {
          TextView mNewsVideoHead;
          TextView mNewsVideoDesc;
          ImageView mNewsVideoImage;
@@ -463,15 +542,14 @@ import androidx.recyclerview.widget.RecyclerView;
          Button mWhatsButton;
          Button mBookmarkButton;
          LinearLayout mLayout;
-         private String currentVideoId;
+         String currentVideoId;
 
-
-
+         YouTubePlayerView youTubePlayerView;
 
          YtNewsVideoViewHolder(@NonNull View itemView) {
              super(itemView);
 
-             YouTubePlayerView youTubePlayerView =itemView.findViewById(R.id.youtube_player_view);
+             youTubePlayerView = itemView.findViewById(R.id.youtube_player_view);
              mNewsVideoHead = itemView.findViewById(R.id.news_video_head);
              mNewsVideoDesc = itemView.findViewById(R.id.news_video_desc);
              mNewsVideoExtra = itemView.findViewById(R.id.news_video_extra);
@@ -481,11 +559,13 @@ import androidx.recyclerview.widget.RecyclerView;
              mBookmarkButton = itemView.findViewById(R.id.video_bookmark_button);
              mLayout = itemView.findViewById(R.id.news_video_item);
 
+
              youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                  @Override
-                 public void onReady(@NonNull YouTubePlayer initializedYouTubePlayer) {
-                     youTubePlayer=initializedYouTubePlayer;
-                     youTubePlayer.cueVideo(currentVideoId, 0);
+                 public void onReady(YouTubePlayer initializedYoutubePlayer) {
+                     youTubePlayer = initializedYoutubePlayer;
+
+                     youTubePlayer.cueVideo(currentVideoId,0);
                  }
              });
 
@@ -494,7 +574,7 @@ import androidx.recyclerview.widget.RecyclerView;
                  if (position != RecyclerView.NO_POSITION) {
                      BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
                      Bitmap bitmap = drawable.getBitmap();
-                     mShareClickListener.shareNormal(position,bitmap);
+                     mShareClickListener.shareNormal(position, bitmap);
                  }
              });
              mWhatsButton.setOnClickListener(v -> {
@@ -502,7 +582,7 @@ import androidx.recyclerview.widget.RecyclerView;
                  if (position != RecyclerView.NO_POSITION) {
                      BitmapDrawable drawable = (BitmapDrawable) mNewsVideoImage.getDrawable();
                      Bitmap bitmap = drawable.getBitmap();
-                     mWhatsClickListener.shareWhats(position,bitmap);
+                     mWhatsClickListener.shareWhats(position, bitmap);
 
                  }
              });
@@ -516,16 +596,26 @@ import androidx.recyclerview.widget.RecyclerView;
              });
              mLayout.setOnClickListener(v -> mActionbarListener.actionBarView());
          }
+
          void cueVideo(String videoId) {
              currentVideoId = videoId;
-             if(youTubePlayer == null)
+             if (youTubePlayer == null)
                  return;
+             youTubePlayer.cueVideo(currentVideoId,0);
 
-             youTubePlayer.cueVideo(videoId, 0);
          }
-
      }
 
+    public class FullPlayerViewHolder extends RecyclerView.ViewHolder{
+
+        FullPlayerViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            jzvdStd = itemView.findViewById(R.id.jz_video);
+
+        }
+
+    }
     public class CustomAdViewHolder extends RecyclerView.ViewHolder{
 
          ImageView mNewsImage;
@@ -546,6 +636,79 @@ import androidx.recyclerview.widget.RecyclerView;
             });
         }
     }
+
+    public class YtViewHolder extends RecyclerView.ViewHolder{
+
+        ImageView mYtImage;
+        Button mPlay;
+        TextView mYtTitle;
+        String currentVideoIdFull;
+        ProgressBar ytprogress;
+
+        YouTubePlayerView youTubePlayerViewFull;
+        YtViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mYtImage = itemView.findViewById(R.id.ytimage);
+            mPlay = itemView.findViewById(R.id.ytplay);
+            mYtTitle=itemView.findViewById(R.id.yttitle);
+            youTubePlayerViewFull =itemView.findViewById(R.id.yt_view);
+            ytprogress=itemView.findViewById(R.id.ytprogress);
+
+            youTubePlayerViewFull.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(YouTubePlayer initializedYoutubePlayer) {
+                    ytprogress.setVisibility(View.INVISIBLE);
+                    mPlay.setVisibility(View.VISIBLE);
+                    youTubePlayerFull = initializedYoutubePlayer;
+                    youTubePlayerFull.cueVideo(currentVideoIdFull,0);
+                }
+            });
+
+
+            mPlay.setOnClickListener(v -> {
+                mPlay.setVisibility(View.INVISIBLE);
+                youTubePlayerViewFull.setVisibility(View.VISIBLE);
+                youTubePlayerViewFull.getYouTubePlayerWhenReady(YouTubePlayer::play);
+                mYtImage.setVisibility(View.GONE);
+
+            });
+        }
+        void cueVideoFull(String videoId) {
+            currentVideoIdFull = videoId;
+            if (youTubePlayerFull == null)
+                return;
+            youTubePlayerFull.loadVideo(videoId,0);
+
+        }
+    }
+     public class ReviewViewHolder extends RecyclerView.ViewHolder{
+
+         ImageView mReviewImage;
+         TextView mReviewHead;
+         Button mReviewLink;
+         TextView mReviewDesc;
+         TextView mReviewRating;
+
+         ReviewViewHolder(@NonNull View itemView) {
+             super(itemView);
+
+             mReviewImage = itemView.findViewById(R.id.reviewimage);
+             mReviewHead=itemView.findViewById(R.id.reviewhead);
+             mReviewDesc=itemView.findViewById(R.id.reviewdesc);
+             mReviewRating=itemView.findViewById(R.id.reviewrating);
+             mReviewLink = itemView.findViewById(R.id.reviewlink);
+
+             mReviewLink.setOnClickListener(v -> {
+                 int position = getAdapterPosition();
+                 if (position != RecyclerView.NO_POSITION) {
+                     mReviewClickListener.reviewClick(position);
+
+                 }
+             });
+         }
+     }
+
     public class FullImageViewHolder extends RecyclerView.ViewHolder{
 
         ImageView mNewsImage;
@@ -629,5 +792,15 @@ import androidx.recyclerview.widget.RecyclerView;
         //video still playing on background after scroll even if autoplay=false
          if(youTubePlayer!=null)
         youTubePlayer.pause();
+         if(youTubePlayerFull!=null)
+             youTubePlayerFull.pause();
+
      }
+     public void onDestroy() {
+
+     }
+
+    public void onStop() {
+    }
+
 }
