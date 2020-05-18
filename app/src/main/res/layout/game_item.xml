@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:background="#101010">
+
 <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,7 +17,11 @@
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
         android:src="@drawable/game_place"
-        android:adjustViewBounds="true"
-        />
+        android:adjustViewBounds="true"/>
 </androidx.cardview.widget.CardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/gradient_bottom_black_slider" />
 </RelativeLayout>

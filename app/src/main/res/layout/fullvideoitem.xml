@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+ app:cardCornerRadius="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/video_view"
+            android:layout_gravity="center_vertical"
+            app:use_controller="true"
+            app:show_buffering="always"
+            app:default_artwork="@drawable/jhon_place"
+            app:use_artwork="true"
+            app:controller_layout_id="@layout/exoplayer_controller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <View
+            android:id="@+id/full_video_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/gradient_bottom_black_slider" />
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="35dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/videorating"
+            android:textStyle="bold"
+            android:fontFamily="@font/robotlight"
+            android:textColor="#c9c9c9"
+            android:textSize="14sp"
+            android:layout_marginBottom="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3.5/5"
+            />
+        <TextView
+            android:id="@+id/videohead"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto"
+            android:textColor="#fff"
+            android:layout_marginBottom="3dp"
+            android:textSize="22sp"
+            android:layout_marginEnd="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jhon Wick:Chapter 4"
+            />
+
+        <TextView
+            android:id="@+id/videodesc"
+            android:textStyle="bold"
+            android:fontFamily="@font/robotlight"
+            android:textColor="#fafafa"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="The Keanu Reeves-starring action franchise keeps ticking right along, but director Chad Stahelski has been honest about where this is all heading."
+            />
+        <Button
+            android:id="@+id/videolink"
+            android:text="Book Tickets"
+            android:textColor="#FFFFFFFF"
+            android:textSize="12sp"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/button_outlined"
+            />
+    </LinearLayout>
+</FrameLayout>
+</androidx.cardview.widget.CardView>

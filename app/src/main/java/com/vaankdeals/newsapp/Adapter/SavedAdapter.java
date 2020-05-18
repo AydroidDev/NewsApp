@@ -459,6 +459,7 @@ public class SavedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             youTubePlayer.pause();
     }
     public void onDestroy() {
+        if(youTubePlayerView!=null)
         youTubePlayerView.release();
     }
 }

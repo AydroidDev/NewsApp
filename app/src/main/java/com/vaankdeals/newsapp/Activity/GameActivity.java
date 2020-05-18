@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.r0adkll.slidr.Slidr;
 import com.vaankdeals.newsapp.Adapter.GameAdapter;
 import com.vaankdeals.newsapp.Model.GameModel;
 import com.vaankdeals.newsapp.R;
@@ -27,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameActivity extends AppCompatActivity implements GameAdapter.gameListener{
 
@@ -38,6 +41,7 @@ public class GameActivity extends AppCompatActivity implements GameAdapter.gameL
     ImageView imageView1;
     ImageView imageView2;
     LinearLayout imageContainer;
+    LinearLayout layAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,8 @@ public class GameActivity extends AppCompatActivity implements GameAdapter.gameL
         recyclerView=findViewById(R.id.recycler_view);
         progressBar=findViewById(R.id.progress_game);
 
+        Slidr.attach(this);
+        layAll =findViewById(R.id.layAll);
         imageContainer=findViewById(R.id.imageContainer);
         imageView1=findViewById(R.id.gridimage1);
         imageView2=findViewById(R.id.gridimage2);
@@ -56,8 +62,23 @@ public class GameActivity extends AppCompatActivity implements GameAdapter.gameL
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(gameAdapter);
 
+
         parseJson();
         recentItems();
+
+    }
+    public void sliderItem(){
+        if(GameList.size()!=0) {
+            Random random = new Random();
+            int no = random.nextInt(GameList.size());
+            GameModel clickeditem = GameList.get(no);
+            String slideImage = clickeditem.getGame_image();
+            ImageView slideImageView = findViewById(R.id.sliderImage);
+            Button slideButton = findViewById(R.id.sliderButton);
+            String slideUrl = clickeditem.getGame_url();
+            Glide.with(this).load(slideImage).into(slideImageView);
+            slideButton.setOnClickListener(v -> openGame(slideUrl));
+        }
     }
 private void recentItems(){
     SharedPreferences sharedPreferences = getSharedPreferences("recentGames", MODE_PRIVATE);
@@ -70,8 +91,16 @@ private void recentItems(){
             imageView2.setVisibility(View.VISIBLE);
             String image1=sharedPreferences.getString("image1","");
             String image2=sharedPreferences.getString("image2","");
+            String url1=sharedPreferences.getString("url1","");
+            String url2=sharedPreferences.getString("url2","");
             Glide.with(this).load(image1).apply(new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(20))).into(imageView1);
             Glide.with(this).load(image2).apply(new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(20))).into(imageView2);
+            imageView1.setOnClickListener(v -> {
+                openGame(url1);
+            });
+            imageView2.setOnClickListener(v->{
+                openGame(url2);
+            });
         }
         else{
             imageContainer.setVisibility(View.VISIBLE);
@@ -97,7 +126,9 @@ private void recentItems(){
                         }
                         // Just call notifyDataSetChanged here
                         progressBar.setVisibility(View.GONE);
+                        layAll.setVisibility(View.VISIBLE);
                         gameAdapter.notifyDataSetChanged();
+                        sliderItem();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -121,7 +152,7 @@ private void recentItems(){
 
                 addRecent.putString(
                         "image2", image2);
-                addRecent.putString("url1", url2);
+                addRecent.putString("url2", url2);
                 addRecent.apply();
             }
 
@@ -136,8 +167,11 @@ private void recentItems(){
             addRecent.apply();
         }
         String url =clickeditem.getGame_url();
-            Intent webIntent = new Intent(this, WebActivity.class);
+           openGame(url);
+    }
+    public void openGame(String url){
+        Intent webIntent = new Intent(this, WebActivity.class);
         webIntent.putExtra("ns_url", url);
-            startActivity(webIntent);
+        startActivity(webIntent);
     }
 }

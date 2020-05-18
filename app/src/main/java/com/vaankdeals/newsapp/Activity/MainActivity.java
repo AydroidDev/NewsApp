@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
+import cn.jzvd.JzvdStd;
 
 import android.os.Bundle;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
@@ -45,12 +46,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 ViewPager2 newsViewpager = findViewById(R.id.news_swipe);
+                JzvdStd.releaseAllVideos();
                 ((NewsAdapter) Objects.requireNonNull(newsViewpager.getAdapter())).pauseYtVid();
+
             }
 
             @Override
             public void onPageSelected(int position) {
-
+                JzvdStd.releaseAllVideos();
             }
 
             @Override

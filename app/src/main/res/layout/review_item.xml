@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="1dp"
+        app:cardElevation="0dp"
+        android:layout_marginEnd="2dp"
+        app:cardCornerRadius="12dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/reviewimage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/jhon_place" />
+            <View
+                android:id="@+id/review_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/gradient_bottom_black_slider" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginStart="20dp"
+    android:layout_marginBottom="35dp"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/reviewrating"
+        android:fontFamily="@font/robotlight"
+        android:textColor="#ebebeb"
+        android:textSize="13sp"
+        android:layout_marginBottom="1dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3.5/5"
+        />
+            <TextView
+                android:id="@+id/reviewhead"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto"
+                android:textColor="#fff"
+                android:layout_marginEnd="70dp"
+                android:layout_marginBottom="3dp"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jhon Wick:Chapter 4"
+                />
+
+            <TextView
+                android:id="@+id/reviewdesc"
+                android:textStyle="bold"
+                android:fontFamily="@font/robotlight"
+                android:textColor="#fafafa"
+                android:textSize="15sp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginEnd="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The Keanu Reeves-starring action franchise keeps ticking right along, but director Chad Stahelski has been honest about where this is all heading."
+                />
+            <Button
+                android:id="@+id/reviewlink"
+                android:text="Book Tickets"
+                android:textColor="#FFFFFFFF"
+                android:textSize="12sp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/button_outlined"
+                />
+</LinearLayout>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

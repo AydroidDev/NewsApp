@@ -18,6 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
+
+import cn.jzvd.JzvdStd;
 import spencerstudios.com.bungeelib.Bungee;
 
 import android.os.Environment;
@@ -72,7 +74,8 @@ import java.util.Objects;
 import java.util.Random;
 
 
-public class NewsFragment extends Fragment implements NetworkChangeReceiver.ConnectionChangeCallback,NewsAdapter.videoClickListener,NewsAdapter.newsOutListener,NewsAdapter.whatsClickListener,NewsAdapter.shareClickListener,NewsAdapter.adClickListener,NewsAdapter.bookmarkListener,NewsAdapter.actionbarListener{
+public class NewsFragment extends Fragment implements NetworkChangeReceiver.ConnectionChangeCallback,NewsAdapter.videoClickListener,NewsAdapter.newsOutListener,NewsAdapter.whatsClickListener,NewsAdapter.shareClickListener,NewsAdapter.adClickListener,NewsAdapter.bookmarkListener,NewsAdapter.actionbarListener,NewsAdapter.reviewClickListener{
+
 
     private NewsAdapter newsAdapter;
     private static final int NUMBER_OF_ADS = 2;
@@ -89,7 +92,6 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     private SwipeRefreshLayout swipeRefreshLayout;
     private RelativeLayout retry_box;
     private LinearLayout loading_anim;
-    Context mContext;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -105,12 +107,13 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
 
         mRequestQueue = Volley.newRequestQueue((Objects.requireNonNull(getActivity())));
 
-        toolbar = (Toolbar) rootView.findViewById(R.id.tool_barz);
-        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        toolbar = rootView.findViewById(R.id.tool_barz);
+        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         retry_box= rootView.findViewById(R.id.retry_box);
         loading_anim = rootView.findViewById(R.id.loading_anim);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        mTitle.setText("My Deals");
+        mTitle.setText("My Feed");
+
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
@@ -123,7 +126,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         Objects.requireNonNull(getActivity()).registerReceiver(networkChangeReceiver, intentFilter);
         isReceiverRegistered = true;
         networkChangeReceiver.setConnectionChangeCallback(this);
-        newsAdapter = new NewsAdapter(getContext(),mNewsList);
+        newsAdapter = new NewsAdapter(getContext(),mNewsList,getLifecycle());
         newsAdapter.setvideoClickListener(NewsFragment.this);
         newsAdapter.setnewsOutListener(NewsFragment.this);
         newsAdapter.setshareClickListener(NewsFragment.this);
@@ -131,7 +134,8 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         newsAdapter.setadClickListener(NewsFragment.this);
         newsAdapter.setbookmarkListener(NewsFragment.this);
         newsAdapter.setactionbarListener(NewsFragment.this);
-         swipeRefreshLayout= (SwipeRefreshLayout) rootView.findViewById(R.id.newsSwipeLayout);
+        newsAdapter.setmReviewClickListener(NewsFragment.this);
+         swipeRefreshLayout= rootView.findViewById(R.id.newsSwipeLayout);
         swipeRefreshLayout.setOnRefreshListener(this::refresh_now);
 
         newsViewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -140,6 +144,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
 
 
+                ((NewsAdapter) Objects.requireNonNull(newsViewpager.getAdapter())).pauseYtVid();
                 if(positionOffsetPixels>0){
 
                     toolbar.animate()
@@ -149,16 +154,20 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                 }
 
             }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+
+            }
+
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
-                ((NewsAdapter)newsViewpager.getAdapter()).pauseYtVid();
+
             }
-
-
         });
-
-
         newsViewpager.setPageTransformer(new DepthPageTransformer());
         newsViewpager.setAdapter(newsAdapter);
         parseJson();
@@ -171,6 +180,9 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         }, TIME);
         return rootView;
     }
+
+
+
     @Override
     public void onConnectionChange(boolean isConnected) {
         if(isConnected){
@@ -194,6 +206,11 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
 
     }
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+    @Override
     public void onResume() {
 
         super.onResume();
@@ -207,6 +224,12 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
             isReceiverRegistered = false;// set it back to false.
         }
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
     }
 
     @Override
@@ -461,6 +484,12 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     }
 
     public void customAdLink(int position){
+
+        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickeditem.getmNewslink()));
+        startActivity(browserIntent);
+    }
+    public void reviewClick(int position){
 
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickeditem.getmNewslink()));
