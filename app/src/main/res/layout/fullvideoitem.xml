@@ -6,18 +6,21 @@
     android:layout_height="match_parent">
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#000">
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/video_view"
-            android:layout_gravity="center_vertical"
             app:use_controller="true"
             app:show_buffering="always"
-            app:default_artwork="@drawable/jhon_place"
-            app:use_artwork="true"
-            app:controller_layout_id="@layout/exoplayer_controller"
+            android:background="#000"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            app:hide_on_touch="true"
+            app:show_timeout="1000"
+            app:rewind_increment="10000"
+            app:fastforward_increment="10000"
+            app:controller_layout_id="@layout/exoplayer_controller"/>
         <View
             android:id="@+id/full_video_overlay"
             android:layout_width="match_parent"
@@ -41,7 +44,6 @@
             android:layout_marginBottom="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3.5/5"
             />
         <TextView
             android:id="@+id/videohead"
@@ -53,7 +55,6 @@
             android:layout_marginEnd="70dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Jhon Wick:Chapter 4"
             />
 
         <TextView
@@ -66,12 +67,11 @@
             android:layout_marginEnd="100dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="The Keanu Reeves-starring action franchise keeps ticking right along, but director Chad Stahelski has been honest about where this is all heading."
             />
         <Button
             android:id="@+id/videolink"
-            android:text="Book Tickets"
             android:textColor="#FFFFFFFF"
+            android:visibility="gone"
             android:textSize="12sp"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"

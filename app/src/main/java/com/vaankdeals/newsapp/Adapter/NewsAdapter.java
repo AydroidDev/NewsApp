@@ -44,7 +44,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.views.YouTubePlayerSeekBar;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
-import com.vaankdeals.newsapp.Class.JzvdStdTikTok;
 import com.vaankdeals.newsapp.Class.UnifiedNativeAdViewHolder;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
@@ -57,8 +56,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
-import cn.jzvd.JZDataSource;
-import cn.jzvd.Jzvd;
+
 
 public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

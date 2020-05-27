@@ -76,7 +76,9 @@ public class GameActivity extends AppCompatActivity implements GameAdapter.gameL
             ImageView slideImageView = findViewById(R.id.sliderImage);
             Button slideButton = findViewById(R.id.sliderButton);
             String slideUrl = clickeditem.getGame_url();
-            Glide.with(this).load(slideImage).into(slideImageView);
+            if (!GameActivity.this.isFinishing()) {
+                Glide.with(this).load(slideImage).into(slideImageView);
+            }
             slideButton.setOnClickListener(v -> openGame(slideUrl));
         }
     }
@@ -93,8 +95,12 @@ private void recentItems(){
             String image2=sharedPreferences.getString("image2","");
             String url1=sharedPreferences.getString("url1","");
             String url2=sharedPreferences.getString("url2","");
-            Glide.with(this).load(image1).apply(new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(20))).into(imageView1);
-            Glide.with(this).load(image2).apply(new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(20))).into(imageView2);
+            if (!GameActivity.this.isFinishing()) {
+                Glide.with(this).load(image1).apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(20))).into(imageView1);
+            }
+            if (!GameActivity.this.isFinishing()) {
+                Glide.with(this).load(image2).apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(20))).into(imageView2);
+            }
             imageView1.setOnClickListener(v -> {
                 openGame(url1);
             });
@@ -106,8 +112,9 @@ private void recentItems(){
             imageContainer.setVisibility(View.VISIBLE);
             imageView1.setVisibility(View.VISIBLE);
             String image1=sharedPreferences.getString("image1","");
-            Glide.with(this).load(image1).apply(new RequestOptions().transforms(new CenterCrop(),new RoundedCorners(20))).into(imageView1);
-
+            if (!GameActivity.this.isFinishing()) {
+                Glide.with(this).load(image1).apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(20))).into(imageView1);
+            }
         }
     }
 }

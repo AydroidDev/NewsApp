@@ -1,6 +1,8 @@
 package com.vaankdeals.newsapp.Model;
 
-public class NewsModel {
+import java.io.Serializable;
+
+public class NewsModel{
     private String mNewsHead;
     private String mNewsDesc;
     private String mNewsImage;

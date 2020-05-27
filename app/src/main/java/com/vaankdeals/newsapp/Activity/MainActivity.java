@@ -7,24 +7,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
-import cn.jzvd.JzvdStd;
-
 import android.os.Bundle;
-import com.vaankdeals.newsapp.Adapter.NewsAdapter;
+
 import com.vaankdeals.newsapp.Fragment.MenuFragment;
 import com.vaankdeals.newsapp.Fragment.NewsFragment;
 import com.vaankdeals.newsapp.R;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     ViewPager viewPager;
     MenuFragment menuFragment;
     NewsFragment newsFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +41,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                ViewPager2 newsViewpager = findViewById(R.id.news_swipe);
-                JzvdStd.releaseAllVideos();
-                ((NewsAdapter) Objects.requireNonNull(newsViewpager.getAdapter())).pauseYtVid();
 
             }
 
             @Override
             public void onPageSelected(int position) {
-                JzvdStd.releaseAllVideos();
+
             }
 
             @Override
@@ -71,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     public void swipeoptionstwo(){
         viewPager.setCurrentItem(1,true);
     }
+
+
+
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragments = new ArrayList<>();
         private List<String> fragmentsTitle = new ArrayList<>();

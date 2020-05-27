@@ -16,10 +16,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
-
-import cn.jzvd.JzvdStd;
 import spencerstudios.com.bungeelib.Bungee;
 
 import android.os.Environment;
@@ -35,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +53,7 @@ import com.vaankdeals.newsapp.Activity.MainActivity;
 import com.vaankdeals.newsapp.Activity.NewsActivity;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
 import com.vaankdeals.newsapp.Adapter.NewsAdapter;
+import com.vaankdeals.newsapp.Adapter.PagerAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Class.DepthPageTransformer;
 import com.vaankdeals.newsapp.Class.NetworkChangeReceiver;
@@ -74,10 +75,9 @@ import java.util.Objects;
 import java.util.Random;
 
 
-public class NewsFragment extends Fragment implements NetworkChangeReceiver.ConnectionChangeCallback,NewsAdapter.videoClickListener,NewsAdapter.newsOutListener,NewsAdapter.whatsClickListener,NewsAdapter.shareClickListener,NewsAdapter.adClickListener,NewsAdapter.bookmarkListener,NewsAdapter.actionbarListener,NewsAdapter.reviewClickListener{
+public class NewsFragment extends Fragment implements NetworkChangeReceiver.ConnectionChangeCallback{
 
-
-    private NewsAdapter newsAdapter;
+    private PagerAdapter newsAdapter;
     private static final int NUMBER_OF_ADS = 2;
     private final List<UnifiedNativeAd> mNativeAds = new ArrayList<>();
     private RequestQueue mRequestQueue;
@@ -91,7 +91,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     private Toolbar toolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RelativeLayout retry_box;
-    private LinearLayout loading_anim;
+    private ProgressBar progressBar;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -110,7 +110,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         toolbar = rootView.findViewById(R.id.tool_barz);
         TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
         retry_box= rootView.findViewById(R.id.retry_box);
-        loading_anim = rootView.findViewById(R.id.loading_anim);
+        progressBar = rootView.findViewById(R.id.news_progress);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         mTitle.setText("My Feed");
 
@@ -126,25 +126,17 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         Objects.requireNonNull(getActivity()).registerReceiver(networkChangeReceiver, intentFilter);
         isReceiverRegistered = true;
         networkChangeReceiver.setConnectionChangeCallback(this);
-        newsAdapter = new NewsAdapter(getContext(),mNewsList,getLifecycle());
-        newsAdapter.setvideoClickListener(NewsFragment.this);
-        newsAdapter.setnewsOutListener(NewsFragment.this);
-        newsAdapter.setshareClickListener(NewsFragment.this);
-        newsAdapter.setwhatsClickListener(NewsFragment.this);
-        newsAdapter.setadClickListener(NewsFragment.this);
-        newsAdapter.setbookmarkListener(NewsFragment.this);
-        newsAdapter.setactionbarListener(NewsFragment.this);
-        newsAdapter.setmReviewClickListener(NewsFragment.this);
+
+        newsAdapter = new PagerAdapter(this,mNewsList);
+        //newsViewpager.setPageTransformer(new DepthPageTransformer());
          swipeRefreshLayout= rootView.findViewById(R.id.newsSwipeLayout);
         swipeRefreshLayout.setOnRefreshListener(this::refresh_now);
-
         newsViewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
 
 
-                ((NewsAdapter) Objects.requireNonNull(newsViewpager.getAdapter())).pauseYtVid();
                 if(positionOffsetPixels>0){
 
                     toolbar.animate()
@@ -166,12 +158,12 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
 
+
             }
         });
-        newsViewpager.setPageTransformer(new DepthPageTransformer());
         newsViewpager.setAdapter(newsAdapter);
+        newsViewpager.setOffscreenPageLimit(1);
         parseJson();
-
         loadNativeAds();
         ((AppCompatActivity)getActivity()).getSupportActionBar().show(); //call function!
         int TIME = 4000;
@@ -191,7 +183,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     }
     private void refresh_now(){
 
-        loading_anim.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         retry_box.setVisibility(View.GONE);
         newsAdapter.notifyDataSetChanged();
         parseJson();
@@ -262,6 +254,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         int index = 1;
         for (UnifiedNativeAd ad : mNativeAds) {
             mNewsList.add(index, ad);
+            newsAdapter.notifyItemInserted(index);
             index = index + offset;
         }
 
@@ -275,7 +268,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                 unifiedNativeAd -> {
                     mNativeAds.add(unifiedNativeAd);
                     if (mNativeAds.size() == NUMBER_OF_ADS) {
-                        NewsFragment.this.insertAdsInMenuItems();
+                        insertAdsInMenuItems();
                     }
                 }).withAdListener(
                 new AdListener() {
@@ -320,7 +313,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                             mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video));
                         }
 
-                        loading_anim.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
 
                     } catch (JSONException e) {
@@ -340,7 +333,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(request);
     }
-    @Override
+
     public void videoActivity(int position) {
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
         String url = clickeditem.getmNewsVideo();
@@ -554,6 +547,7 @@ else if(clickeditem.getmNewsType().equals("5")) {
             actionBar.show();
         }
     }
+
 }
 
 

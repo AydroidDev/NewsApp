@@ -19,19 +19,20 @@ public class DepthPageTransformer implements ViewPager2.PageTransformer {
 
         } else if (position <= 0) { // [-1,0]
             // Use the default slide transition when moving to the left page
-            view.setAlpha(1f);
+
             view.setTranslationY(0f);
             view.setTranslationZ(0f);
             view.setScaleX(1f);
             view.setScaleY(1f);
-
+            view.setAlpha(1-Math.abs(position));
         } else if (position <= 1) { // (0,1]
             // Fade the page out.
-            view.setAlpha(1 - position);
 
+
+            view.setAlpha(1f);
             // Counteract the default slide transition
             view.setTranslationY(pageWidth * -position);
-            float MIN_SCALE = 0.95f;
+            float MIN_SCALE = 1f;
             if(position>=1){
                 MIN_SCALE =0f;
             }
