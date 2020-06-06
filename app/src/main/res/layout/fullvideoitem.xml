@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
- app:cardCornerRadius="12dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <FrameLayout
@@ -9,18 +8,28 @@
         android:layout_height="match_parent"
         android:background="#000">
 
+
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/video_view"
             app:use_controller="true"
-            app:show_buffering="always"
-            android:background="#000"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:hide_on_touch="true"
-            app:show_timeout="1000"
+            app:auto_show="false"
+            app:show_timeout="2000"
             app:rewind_increment="10000"
             app:fastforward_increment="10000"
             app:controller_layout_id="@layout/exoplayer_controller"/>
+        <ImageView
+            android:id="@+id/exo_thumb"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ProgressBar
+            android:id="@+id/exo_progress_bar_custom"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_height="wrap_content"/>
         <View
             android:id="@+id/full_video_overlay"
             android:layout_width="match_parent"
@@ -77,7 +86,7 @@
             android:paddingStart="15dp"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/button_outlined"
             />
     </LinearLayout>

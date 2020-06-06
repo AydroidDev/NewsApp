@@ -12,8 +12,7 @@
         android:layout_marginBottom="3dp"
         android:layout_marginTop="1dp"
         app:cardElevation="0dp"
-        android:layout_marginEnd="2dp"
-        app:cardCornerRadius="12dp">
+        android:layout_marginEnd="2dp">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -34,7 +33,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:layout_marginStart="20dp"
+    android:layout_marginStart="25dp"
     android:layout_marginBottom="35dp"
     android:orientation="vertical">
     <TextView
@@ -66,7 +65,7 @@
                 android:fontFamily="@font/robotlight"
                 android:textColor="#fafafa"
                 android:textSize="15sp"
-                android:layout_marginBottom="3dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginEnd="100dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +78,7 @@
                 android:textSize="12sp"
                 android:paddingEnd="15dp"
                 android:paddingStart="15dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:background="@drawable/button_outlined"

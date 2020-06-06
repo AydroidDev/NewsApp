@@ -6,13 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.vaankdeals.newsapp.R;
+
+import java.util.Random;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -44,6 +45,9 @@ public class NativeFragment extends Fragment {
     private void loadAdsNative() {
 
         UnifiedNativeAdView adView = (UnifiedNativeAdView) getActivity().getLayoutInflater().inflate(R.layout.ad_google_new, null);
+        int[] androidColors = getResources().getIntArray(R.array.androidcolors);
+        int randomAndroidColor = androidColors[new Random().nextInt(androidColors.length)];
+        adView.setBackgroundColor(randomAndroidColor);
         populateNativeAdView(unifiedNativeAd, adView);
         cardView.removeAllViews();
         cardView.addView(adView);
@@ -55,7 +59,6 @@ public class NativeFragment extends Fragment {
         adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
         adView.setBodyView(adView.findViewById(R.id.ad_body));
-        adView.setStarRatingView(adView.findViewById(R.id.ad_stars));
         adView.setMediaView(adView.findViewById(R.id.ad_media));
         adView.setCallToActionView(adView.findViewById(R.id.ad_call_to_action));
         adView.setIconView(adView.findViewById(R.id.ad_icon));
@@ -87,13 +90,7 @@ public class NativeFragment extends Fragment {
         }
 
 
-        if (nativeAd.getStarRating() == null) {
-            adView.getStarRatingView().setVisibility(View.INVISIBLE);
-        } else {
-            ((RatingBar) adView.getStarRatingView())
-                    .setRating(nativeAd.getStarRating().floatValue());
-            adView.getStarRatingView().setVisibility(View.VISIBLE);
-        }
+
 
         if (nativeAd.getAdvertiser() == null) {
             adView.getAdvertiserView().setVisibility(View.INVISIBLE);

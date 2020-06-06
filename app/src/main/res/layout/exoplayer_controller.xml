@@ -14,27 +14,31 @@
         <ImageView
             android:id="@+id/exo_rew"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_fast_forward_white_36dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:src="@drawable/icon_backward_rounded"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"/>
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/exo_play"
-            app:srcCompat="@drawable/ic_play_circle_filled_black_24dp"
+            android:src="@drawable/icon_play_rounded"
+            android:layout_gravity="center_vertical"
             />
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/exo_pause"
-            app:srcCompat="@drawable/ic_play_circle_filled_black_24dp"
+           android:src="@drawable/icon_pause_rounded"
             />
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:id="@+id/exo_ffwd"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_fast_forward_white_36dp"/>
+            android:src="@drawable/icon_forward_rounded"/>
 
     </LinearLayout>
 

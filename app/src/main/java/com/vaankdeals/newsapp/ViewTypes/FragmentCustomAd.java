@@ -28,10 +28,11 @@ public class FragmentCustomAd extends Fragment {
         View view= inflater.inflate(R.layout.customad, container, false);
 
         ImageView imageView= view.findViewById(R.id.customadimage);
-        String imagUrl =getArguments().getString("ad_image");
-        String adUrl =getArguments().getString("ad_url");
+        NewsModel model =(NewsModel)getArguments().getSerializable("model");
+        String imagUrl =model.getmNewsImage();
+        String adUrl =model.getmNewslink();
         Button adButton=view.findViewById(R.id.adlinkout);
-        Glide.with(getActivity()).load(imagUrl).into(imageView);
+        Glide.with(requireActivity()).load(imagUrl).into(imageView);
 
         adButton.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(adUrl));

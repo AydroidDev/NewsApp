@@ -10,13 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.net.Uri;
+
 import android.os.Bundle;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 import spencerstudios.com.bungeelib.Bungee;
@@ -31,9 +28,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +41,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -52,7 +54,6 @@ import com.vaankdeals.newsapp.Activity.ExoActivity;
 import com.vaankdeals.newsapp.Activity.MainActivity;
 import com.vaankdeals.newsapp.Activity.NewsActivity;
 import com.vaankdeals.newsapp.Activity.VideoActivity;
-import com.vaankdeals.newsapp.Adapter.NewsAdapter;
 import com.vaankdeals.newsapp.Adapter.PagerAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.Class.DepthPageTransformer;
@@ -73,6 +74,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 
 public class NewsFragment extends Fragment implements NetworkChangeReceiver.ConnectionChangeCallback{
@@ -84,46 +86,42 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     private List<Object> mNewsList = new ArrayList<>() ;
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
-    private ViewPager2 newsViewpager;
+    public static ViewPager2 newsViewpager;
     private File imagePathz;
     private boolean isReceiverRegistered = false;
     private NetworkChangeReceiver networkChangeReceiver;
-    private Toolbar toolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RelativeLayout retry_box;
     private ProgressBar progressBar;
+    private ArrayList<Integer> posToLoad= new ArrayList<>();
 
     public NewsFragment() {
         // Required empty public constructor
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
 
-        mRequestQueue = Volley.newRequestQueue((Objects.requireNonNull(getActivity())));
+        mRequestQueue = Volley.newRequestQueue((Objects.requireNonNull(requireActivity())));
 
-        toolbar = rootView.findViewById(R.id.tool_barz);
-        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+
         retry_box= rootView.findViewById(R.id.retry_box);
         progressBar = rootView.findViewById(R.id.news_progress);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        mTitle.setText("My Feed");
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-        MobileAds.initialize(getActivity(), getString(R.string.admob_app_id));
+        ImageButton button_up = rootView.findViewById(R.id.button_up);
+        ImageButton button_refresh = rootView.findViewById(R.id.button_refresh);
+
+        MobileAds.initialize(requireActivity(), getString(R.string.admob_app_id));
          newsViewpager = rootView.findViewById(R.id.news_swipe);
         IntentFilter intentFilter = new
                 IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         networkChangeReceiver = new NetworkChangeReceiver();
-        Objects.requireNonNull(getActivity()).registerReceiver(networkChangeReceiver, intentFilter);
+        Objects.requireNonNull(requireActivity()).registerReceiver(networkChangeReceiver, intentFilter);
         isReceiverRegistered = true;
         networkChangeReceiver.setConnectionChangeCallback(this);
 
@@ -136,21 +134,35 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
 
-
-                if(positionOffsetPixels>0){
-
-                    toolbar.animate()
-                            .setDuration(150)
-                            .translationY(0);
-                    ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-                }
-
             }
 
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
 
+               for(int i=position;i<position+3;i++) {
+                   Object model = mNewsList.get(i);
+                   if(model instanceof NewsModel && !posToLoad.contains(i)) {
+                       NewsModel currentitem = (NewsModel) mNewsList.get(i);
+                       if(!currentitem.getmNewsImage().isEmpty()) {
+                           new Thread(() -> Glide.with(requireContext())
+                                   .downloadOnly()
+                                   .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.DATA))
+                                   .load(currentitem.getmNewsImage())
+                                   .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL));
+                           posToLoad.add(i);
+                           Log.e("added", "onPageSelected: Added"+currentitem.getmNewsId()+" "+currentitem.getmNewsHead());
+                       }
+                   }
+               }
+                if(position==0){
+                    button_refresh.setVisibility(View.VISIBLE);
+                    button_up.setVisibility(View.GONE);
+                }
+                else{
+                    button_refresh.setVisibility(View.GONE);
+                    button_up.setVisibility(View.VISIBLE);
+                }
 
             }
 
@@ -163,13 +175,12 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         });
         newsViewpager.setAdapter(newsAdapter);
         newsViewpager.setOffscreenPageLimit(1);
+        button_up.setOnClickListener(v -> newsViewpager.setCurrentItem(0,true));
+        button_refresh.setOnClickListener(v -> refresh_now());
         parseJson();
         loadNativeAds();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show(); //call function!
-        int TIME = 4000;
-        new Handler().postDelayed(() -> {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().hide(); //call function!
-        }, TIME);
+
+
         return rootView;
     }
 
@@ -194,7 +205,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        getActivity().getMenuInflater().inflate(R.menu.menu_home, menu);
+        requireActivity().getMenuInflater().inflate(R.menu.menu_home, menu);
 
     }
     @Override
@@ -212,7 +223,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     public void onPause() {
 
         if(isReceiverRegistered){
-            Objects.requireNonNull(getActivity()).unregisterReceiver(networkChangeReceiver);
+            Objects.requireNonNull(requireActivity()).unregisterReceiver(networkChangeReceiver);
             isReceiverRegistered = false;// set it back to false.
         }
         super.onPause();
@@ -228,7 +239,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                ((MainActivity)getActivity()).swipeoptions();
+                ((MainActivity)requireActivity()).swipeoptions();
                 return true;
             case R.id.action_up_home:
                 newsViewpager.setCurrentItem(0,true);
@@ -262,7 +273,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
 
     private void loadNativeAds() {
         mNativeAds.clear();
-        AdLoader.Builder builder = new AdLoader.Builder(Objects.requireNonNull(getActivity()), getString(R.string.ad_unit_id_news_main));
+        AdLoader.Builder builder = new AdLoader.Builder(Objects.requireNonNull(requireActivity()), getString(R.string.ad_unit_id_news_main));
 
         AdLoader adLoader = builder.forUnifiedNativeAd(
                 unifiedNativeAd -> {
@@ -313,6 +324,15 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                             mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video));
                         }
 
+                        NewsModel currentitem = (NewsModel) mNewsList.get(0);
+                        if(!currentitem.getmNewsImage().isEmpty()) {
+                            new Thread(() -> Glide.with(requireContext())
+                                    .downloadOnly()
+                                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.DATA))
+                                    .load(currentitem.getmNewsImage())
+                                    .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL));
+                            posToLoad.add(0);
+                        }
                         progressBar.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
 
@@ -350,30 +370,30 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     }
     private void youtubeActivity(int position){
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
-        Intent detailintent = new Intent(getContext(), VideoActivity.class);
+        Intent detailintent = new Intent(requireActivity(), VideoActivity.class);
         detailintent.putExtra("yt_url", clickeditem.getmNewsVideo());
         startActivity(detailintent);
-        Bungee.shrink(getContext());
+        Bungee.shrink(requireActivity());
     }
     private void exoPlayerActivity(int position){
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
-        Intent exoIntent = new Intent(getContext(), ExoActivity.class);
+        Intent exoIntent = new Intent(requireActivity(), ExoActivity.class);
         exoIntent.putExtra("st_url", clickeditem.getmNewsVideo());
         startActivity(exoIntent);
-        Bungee.shrink(getContext());
+        Bungee.shrink(requireActivity());
     }
     public void newsDetailActivity(int position){
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
         String newsLink =clickeditem.getmNewslink();
         if (!newsLink.isEmpty()){
-            Intent newsIntent = new Intent(getContext(), NewsActivity.class);
+            Intent newsIntent = new Intent(requireActivity(), NewsActivity.class);
             newsIntent.putExtra("ns_url", clickeditem.getmNewslink());
             newsIntent.putExtra("ns_title", clickeditem.getmNewsHead());
             startActivity(newsIntent);
-            Bungee.zoom(getContext());
+            Bungee.zoom(requireActivity());
         }
         else {
-            Toast.makeText(getContext(),"Full News Not Available",Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(),"Full News Not Available",Toast.LENGTH_SHORT).show();
         }
 
 
@@ -381,7 +401,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
 
     public void shareNormal(int position,Bitmap bitmap){
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
-        final Bitmap b = drawToBitmap(getContext(),R.layout.news_share, metrics.widthPixels,
+        final Bitmap b = drawToBitmap(requireActivity(),R.layout.news_share, metrics.widthPixels,
                 metrics.heightPixels,position,bitmap);
         saveBitmap(b);
         normalShareIntent(position);
@@ -389,7 +409,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
     }
     public void shareWhats(int position,Bitmap bitmap){
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
-        final Bitmap b = drawToBitmap(getContext(),R.layout.news_share, metrics.widthPixels,
+        final Bitmap b = drawToBitmap(requireActivity(),R.layout.news_share, metrics.widthPixels,
                 metrics.heightPixels,position,bitmap);
         saveBitmap(b);
         whatsappShareIntent(position);
@@ -420,7 +440,7 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         try {
             startActivity(whatsappIntent);
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getContext(),"Whatsapp have not been installed.",Toast.LENGTH_SHORT).show(); }
+            Toast.makeText(requireActivity(),"Whatsapp have not been installed.",Toast.LENGTH_SHORT).show(); }
 
     }
     public  Bitmap drawToBitmap(Context context, int layoutResId,
@@ -488,18 +508,19 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickeditem.getmNewslink()));
         startActivity(browserIntent);
     }
+
     public void bookmarkAll(int position){
         NewsModel clickeditem = (NewsModel) mNewsList.get(position);
         if(clickeditem.getmNewsType().equals("1")){
-            final Button buttonNews = (Button)getActivity().findViewById(R.id.bookmark_button);
+            final Button buttonNews = (Button)requireActivity().findViewById(R.id.bookmark_button);
             buttonNews.setBackgroundResource(R.drawable.bookmark_button_clicked);
         }
 else if(clickeditem.getmNewsType().equals("5")) {
-            final Button buttonVideo = (Button) getActivity().findViewById(R.id.video_bookmark_button);
+            final Button buttonVideo = (Button) requireActivity().findViewById(R.id.video_bookmark_button);
             buttonVideo.setBackgroundResource(R.drawable.bookmark_button_clicked);
 
         }
-        DatabaseHandler db = new DatabaseHandler(getContext());
+        DatabaseHandler db = new DatabaseHandler(requireActivity());
 
         String fieldValue =String.valueOf(clickeditem.getmNewsId());
         String countQuery = "SELECT  * FROM " + TABLE_NEWS + " where " + NEWS_ID +  " = " + fieldValue;
@@ -515,38 +536,26 @@ else if(clickeditem.getmNewsType().equals("5")) {
                     clickeditem.getmNewsImage(),clickeditem.getmNewsSource(),clickeditem.getmNewsDay(),
                     clickeditem.getmNewslink(),clickeditem.getmNewsId(),
                     clickeditem.getmNewsType(),clickeditem.getmNewsVideo()));
-            Toast.makeText(getContext(),"News Saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(),"News Saved", Toast.LENGTH_SHORT).show();
         }
         else {
             if(clickeditem.getmNewsType().equals("1")){
-                final Button buttonNews = (Button)getActivity().findViewById(R.id.bookmark_button);
+                final Button buttonNews = (Button)requireActivity().findViewById(R.id.bookmark_button);
                 buttonNews.setBackgroundResource(R.drawable.bookmark_button);
             }
             else if(clickeditem.getmNewsType().equals("5")) {
-                final Button buttonVideo = (Button) getActivity().findViewById(R.id.video_bookmark_button);
+                final Button buttonVideo = (Button) requireActivity().findViewById(R.id.video_bookmark_button);
                 buttonVideo.setBackgroundResource(R.drawable.bookmark_button);
 
             }
             dbsw.delete(TABLE_NEWS, NEWS_ID + " = ?",
                     new String[] { String.valueOf(fieldValue) });
-            Toast.makeText(getContext(),"News Removed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireActivity(),"News Removed", Toast.LENGTH_SHORT).show();
         }
 
         cursor.close();
     }
-    public void actionBarView(){
 
-        ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
-
-        assert actionBar != null;
-        if (actionBar.isShowing()) {
-
-            actionBar.hide();
-        } else {
-
-            actionBar.show();
-        }
-    }
 
 }
 

@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 
 import androidx.fragment.app.Fragment;
@@ -28,7 +29,8 @@ public class FragmentWeb extends Fragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.webview_item, container, false);
 
-        String web_url=getArguments().getString("web_url");
+        NewsModel model =(NewsModel)getArguments().getSerializable("model");
+        String web_url=model.getmNewslink();
         progressBar=view.findViewById(R.id.progressBar);
         webView=view.findViewById(R.id.webview_item);
         webView.setWebViewClient(new WebViewClient(){

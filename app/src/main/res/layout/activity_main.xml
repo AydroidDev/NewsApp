@@ -4,26 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000"
     tools:context=".Activity.MainActivity">
+
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingTop="8dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0"
+        android:id="@+id/mainAppbar"
         android:background="@null"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:title="@string/app_name">
+        app:elevation="0dp"
+        android:layout_marginTop="25dp"
+       android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            app:tabIndicator="@null"
+            android:background="@null"
+            app:tabTextAppearance="@style/MyCustomTextAppearance"
+            app:tabTextColor="#80ffffff"
+            app:tabSelectedTextColor="#ffffff"
+            app:tabMinWidth="90dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"

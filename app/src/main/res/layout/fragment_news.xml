@@ -6,33 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragment.NewsFragment">
+
     <FrameLayout
         android:background="#212121"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 
         <ProgressBar
             style="?android:attr/progressBarStyle"
             android:id="@+id/news_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_gravity="center_horizontal|center_vertical"
             android:indeterminateDrawable="@drawable/progress_shape"
             />
-    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
-        android:animateLayoutChanges="true"
-        android:layout_height="wrap_content"
-        android:background="#f5f7fa"
-        android:elevation="0dp"
-        xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <include
-            android:id="@+id/tool_barz"
-            layout="@layout/toolbar_new" />
-    </com.google.android.material.appbar.AppBarLayout>
         <RelativeLayout
             android:id="@+id/retry_box"
             android:background="#fff"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -44,13 +38,31 @@
 
 
         </RelativeLayout>
+
     <androidx.viewpager2.widget.ViewPager2
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/news_swipe"
         android:orientation="vertical"
          />
-
-
+        <LinearLayout
+            android:layout_marginTop="40dp"
+   android:layout_marginEnd="30dp"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <ImageButton
+                android:id="@+id/button_refresh"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/icon_restart_rounded"/>
+            <ImageButton
+                android:id="@+id/button_up"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"
+                android:background="@drawable/icon_up_rounded"/>
+        </LinearLayout>
     </FrameLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

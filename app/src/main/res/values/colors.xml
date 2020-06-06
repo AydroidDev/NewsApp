@@ -6,5 +6,23 @@
     <color name="colorAccent">#D81B60</color>
     <color name="buttonFocussed">#ebebeb</color>
     <color name="buttonClicked">#fafafa</color>
+
+    <item name="blue" type="color">#52A68F</item>
+    <item name="purple" type="color">#F3CDD3</item>
+    <item name="green" type="color">#FEC864</item>
+    <item name="orange" type="color">#D3F07A</item>
+    <item name="red" type="color">#52A68F</item>
+    <item name="darkblue" type="color">#CDF564</item>
+
+
+    <integer-array name="androidcolors">
+        <item>@color/blue</item>
+        <item>@color/purple</item>
+        <item>@color/green</item>
+        <item>@color/orange</item>
+        <item>@color/red</item>
+        <item>@color/darkblue</item>
+
+    </integer-array>
 </resources>
 

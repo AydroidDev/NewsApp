@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 
 import androidx.fragment.app.Fragment;
@@ -33,12 +34,13 @@ public class FragmentReview extends Fragment {
         TextView mReviewRating=itemView.findViewById(R.id.reviewrating);
         Button mReviewLink = itemView.findViewById(R.id.reviewlink);
 
-        String rev_url=getArguments().getString("rev_link");
-        Glide.with(getActivity()).load(getArguments().getString("rev_image")).into(mReviewImage);
-        mReviewHead.setText(getArguments().getString("rev_head"));
-        mReviewDesc.setText(getArguments().getString("rev_desc"));
-        mReviewRating.setText(getArguments().getString("rev_rat"));
-        mReviewLink.setText(getArguments().getString("rev_but"));
+        NewsModel model =(NewsModel)getArguments().getSerializable("model");
+        String rev_url=model.getmNewslink();
+        Glide.with(requireActivity()).load(model.getmNewsImage()).into(mReviewImage);
+        mReviewHead.setText(model.getmNewsHead());
+        mReviewDesc.setText(model.getmNewsDesc());
+        mReviewRating.setText(model.getmNewsSource());
+        mReviewLink.setText(model.getmNewsSource());
 
         mReviewLink.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(rev_url));

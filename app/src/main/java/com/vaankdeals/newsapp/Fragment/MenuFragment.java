@@ -6,13 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.astritveliu.boom.Boom;
 
 import com.vaankdeals.newsapp.Activity.AllNewsActivity;
 import com.vaankdeals.newsapp.Activity.GameActivity;
@@ -22,12 +22,13 @@ import com.vaankdeals.newsapp.R;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import libs.mjn.scaletouchlistener.ScaleTouchListener;
+
 
 public class MenuFragment extends Fragment implements View.OnClickListener{
 
     private static final String TABLE_NEWS = "newsbook";
     private static final String NEWS_ID = "newsid";
+
 
     public MenuFragment() {
         // Required empty public constructor
@@ -38,7 +39,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.menu_new, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
         ImageView game_banner=rootView.findViewById(R.id.banner_game);
         ImageButton trending = rootView.findViewById(R.id.trending_cat);
@@ -51,14 +52,13 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         CardView international = rootView.findViewById(R.id.international);
 
 
-        game_banner.setOnTouchListener(new ScaleTouchListener() {
-            @Override
-            public void onClick(View v) {
-                Intent gameIntent = new Intent(getContext(), GameActivity.class);
-                startActivity(gameIntent);
-            }
-
+        new Boom(game_banner);
+        new Boom(technology);
+        game_banner.setOnClickListener(v -> {
+            Intent gameIntent = new Intent(getContext(), GameActivity.class);
+            startActivity(gameIntent);
         });
+
         games.setOnClickListener(v -> {
             Intent gameIntent = new Intent(getContext(), GameActivity.class);
             startActivity(gameIntent);
@@ -93,7 +93,6 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
 
         return rootView;
     }
-
 
 
     @Override
