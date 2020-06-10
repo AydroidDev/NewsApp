@@ -12,8 +12,11 @@ public class NewsModel implements Serializable{
     private String mNewslink;
     private String mNewsType;
     private String mNewsVideo;
+    private String mNewsData1;
+    private String mNewsData2;
+    private String mNewsData3;
 
-    public NewsModel(String newshead, String newsdesc , String newsimage, String newssource, String newsday, String newsid , String newslink,String newstype,String newsvideo){
+    public NewsModel(String newshead, String newsdesc , String newsimage, String newssource, String newsday, String newsid , String newslink,String newstype,String newsvideo,String newsdata1,String newsdat2,String newsdata3){
     mNewsHead = newshead;
     mNewsDesc = newsdesc;
     mNewsImage = newsimage;
@@ -23,6 +26,9 @@ public class NewsModel implements Serializable{
     mNewslink = newslink;
     mNewsType = newstype;
     mNewsVideo = newsvideo;
+    mNewsData1=newsdata1;
+    mNewsData2=newsdat2;
+    mNewsData3=newsdata3;
 }
 
 public String getmNewsType(){
@@ -55,6 +61,15 @@ public String getmNewsType(){
     }
     public String getmNewsVideo() {
         return mNewsVideo;
+    }
+    public String getmNewsData1() {
+        return mNewsData1;
+    }
+    public String getmNewsData2() {
+        return mNewsData2;
+    }
+    public String getmNewsData3() {
+        return mNewsData3;
     }
 
 }

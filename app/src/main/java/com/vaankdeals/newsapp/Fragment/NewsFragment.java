@@ -140,20 +140,22 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
 
+                if(mNewsList.size()!=0){
                for(int i=position;i<position+3;i++) {
                    Object model = mNewsList.get(i);
-                   if(model instanceof NewsModel && !posToLoad.contains(i)) {
+                   if (model instanceof NewsModel && !posToLoad.contains(i)) {
                        NewsModel currentitem = (NewsModel) mNewsList.get(i);
-                       if(!currentitem.getmNewsImage().isEmpty()) {
+                       if (!currentitem.getmNewsImage().isEmpty()) {
                            new Thread(() -> Glide.with(requireContext())
                                    .downloadOnly()
                                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.DATA))
                                    .load(currentitem.getmNewsImage())
                                    .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL));
                            posToLoad.add(i);
-                           Log.e("added", "onPageSelected: Added"+currentitem.getmNewsId()+" "+currentitem.getmNewsHead());
+                           Log.e("added", "onPageSelected: Added" + currentitem.getmNewsId() + " " + currentitem.getmNewsHead());
                        }
                    }
+               }
                }
                 if(position==0){
                     button_refresh.setVisibility(View.VISIBLE);
@@ -320,8 +322,11 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
                             String news_link = ser.getString("news_link");
                             String news_type = ser.getString("news_type");
                             String news_video = ser.getString("news_video");
+                            String news_data1 = ser.getString("news_data1");
+                            String news_data2 = ser.getString("news_data2");
+                            String news_data3 = ser.getString("news_data3");
 
-                            mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video));
+                            mNewsList.add(new NewsModel(news_head,news_desc,news_image,news_source,news_day,news_id,news_link,news_type,news_video,news_data1,news_data2,news_data3));
                         }
 
                         NewsModel currentitem = (NewsModel) mNewsList.get(0);
@@ -494,66 +499,6 @@ public class NewsFragment extends Fragment implements NetworkChangeReceiver.Conn
         } catch (IOException e) {
             Log.e("GREC", e.getMessage(), e);
         }
-    }
-
-    public void customAdLink(int position){
-
-        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickeditem.getmNewslink()));
-        startActivity(browserIntent);
-    }
-    public void reviewClick(int position){
-
-        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(clickeditem.getmNewslink()));
-        startActivity(browserIntent);
-    }
-
-    public void bookmarkAll(int position){
-        NewsModel clickeditem = (NewsModel) mNewsList.get(position);
-        if(clickeditem.getmNewsType().equals("1")){
-            final Button buttonNews = (Button)requireActivity().findViewById(R.id.bookmark_button);
-            buttonNews.setBackgroundResource(R.drawable.bookmark_button_clicked);
-        }
-else if(clickeditem.getmNewsType().equals("5")) {
-            final Button buttonVideo = (Button) requireActivity().findViewById(R.id.video_bookmark_button);
-            buttonVideo.setBackgroundResource(R.drawable.bookmark_button_clicked);
-
-        }
-        DatabaseHandler db = new DatabaseHandler(requireActivity());
-
-        String fieldValue =String.valueOf(clickeditem.getmNewsId());
-        String countQuery = "SELECT  * FROM " + TABLE_NEWS + " where " + NEWS_ID +  " = " + fieldValue;
-        SQLiteDatabase dbs = db.getReadableDatabase();
-        SQLiteDatabase dbsw = db.getWritableDatabase();
-        Cursor cursor = dbs.rawQuery(countQuery, null);
-        int recount = cursor.getCount();
-
-        if(recount <= 0){
-
-
-            db.addContact(new NewsBook(0,clickeditem.getmNewsHead(),clickeditem.getmNewsDesc(),
-                    clickeditem.getmNewsImage(),clickeditem.getmNewsSource(),clickeditem.getmNewsDay(),
-                    clickeditem.getmNewslink(),clickeditem.getmNewsId(),
-                    clickeditem.getmNewsType(),clickeditem.getmNewsVideo()));
-            Toast.makeText(requireActivity(),"News Saved", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            if(clickeditem.getmNewsType().equals("1")){
-                final Button buttonNews = (Button)requireActivity().findViewById(R.id.bookmark_button);
-                buttonNews.setBackgroundResource(R.drawable.bookmark_button);
-            }
-            else if(clickeditem.getmNewsType().equals("5")) {
-                final Button buttonVideo = (Button) requireActivity().findViewById(R.id.video_bookmark_button);
-                buttonVideo.setBackgroundResource(R.drawable.bookmark_button);
-
-            }
-            dbsw.delete(TABLE_NEWS, NEWS_ID + " = ?",
-                    new String[] { String.valueOf(fieldValue) });
-            Toast.makeText(requireActivity(),"News Removed", Toast.LENGTH_SHORT).show();
-        }
-
-        cursor.close();
     }
 
 

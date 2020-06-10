@@ -13,4 +13,5 @@
     <string name="catogories_menu">Catogories</string>
     <string name="menu_feed_name">Feed</string>
     <string name="topic_title">Topics</string>
+    <string name="server_website_menu_tag">https://api.npoint.io/cca0dbd1a719e708371e</string>
 </resources>

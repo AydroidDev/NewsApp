@@ -168,7 +168,7 @@ public class SavedActivity extends AppCompatActivity implements SavedAdapter.vid
             db.addContact(new NewsBook(0,clickeditem.getmNewsHead(),clickeditem.getmNewsDesc(),
                     clickeditem.getmNewsImage(),clickeditem.getmNewsSource(),clickeditem.getmNewsDay(),
                     clickeditem.getmNewslink(),clickeditem.getmNewsId(),
-                    clickeditem.getmNewsType(),clickeditem.getmNewsVideo()));
+                    clickeditem.getmNewsType(),clickeditem.getmNewsVideo(),clickeditem.getmNewsData1(),clickeditem.getmNewsData2(),clickeditem.getmNewsData3()));
             Toast.makeText(this,"News Saved", Toast.LENGTH_SHORT).show();
         }
         else {

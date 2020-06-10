@@ -28,7 +28,7 @@ public class CommonUtils {
             db.addContact(new NewsBook(0,clickeditem.getmNewsHead(),clickeditem.getmNewsDesc(),
                     clickeditem.getmNewsImage(),clickeditem.getmNewsSource(),clickeditem.getmNewsDay(),
                     clickeditem.getmNewslink(),clickeditem.getmNewsId(),
-                    clickeditem.getmNewsType(),clickeditem.getmNewsVideo()));
+                    clickeditem.getmNewsType(),clickeditem.getmNewsVideo(),clickeditem.getmNewsData1(),clickeditem.getmNewsData2(),clickeditem.getmNewsData3()));
         }
         else {
             dbsw.delete(TABLE_NEWS, NEWS_ID + " = ?",

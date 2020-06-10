@@ -8,6 +8,7 @@ import com.vaankdeals.newsapp.ViewTypes.FragmentCard;
 import com.vaankdeals.newsapp.ViewTypes.FragmentCustomAd;
 import com.vaankdeals.newsapp.ViewTypes.FragmentNewsMain;
 import com.vaankdeals.newsapp.ViewTypes.FragmentNewsYt;
+import com.vaankdeals.newsapp.ViewTypes.FragmentProdTag;
 import com.vaankdeals.newsapp.ViewTypes.FragmentReview;
 import com.vaankdeals.newsapp.ViewTypes.FragmentVideoFull;
 import com.vaankdeals.newsapp.ViewTypes.FragmentWeb;
@@ -95,6 +96,13 @@ public class PagerAdapter extends FragmentStateAdapter {
                     bun_ytfull.putInt("yt_position",position);
                     fragmentYtFull.setArguments(bun_ytfull);
                     return fragmentYtFull;
+                case "10":
+                    FragmentProdTag fragmentProdTag = new FragmentProdTag();
+                    Bundle bun_prod=new Bundle();
+                    bun_prod.putSerializable("model",newsModel);
+                    bun_prod.putInt("yt_position",position);
+                    fragmentProdTag.setArguments(bun_prod);
+                    return fragmentProdTag;
                 default:
                     return null;
             }

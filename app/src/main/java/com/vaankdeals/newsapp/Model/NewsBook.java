@@ -2,7 +2,7 @@ package com.vaankdeals.newsapp.Model;
 
 public class NewsBook {
 
-    public NewsBook(int id, String mNewsHead, String mNewsDesc, String mNewsImage, String mNewsSource, String mNewsDay, String mNewslink, String mNewsId, String mNewsType, String mNewsVideo) {
+    public NewsBook(int id, String mNewsHead, String mNewsDesc, String mNewsImage, String mNewsSource, String mNewsDay, String mNewslink, String mNewsId, String mNewsType, String mNewsVideo,String newsdata1,String newsdat2,String newsdata3) {
         this.id = id;
         this.mNewsHead = mNewsHead;
         this.mNewsDesc = mNewsDesc;
@@ -13,6 +13,10 @@ public class NewsBook {
         this.mNewsId = mNewsId;
         this.mNewsType = mNewsType;
         this.mNewsVideo = mNewsVideo;
+        mNewsData1=newsdata1;
+        mNewsData2=newsdat2;
+        mNewsData3=newsdata3;
+
     }
 
     private int id;
@@ -21,16 +25,39 @@ public class NewsBook {
     private String mNewsImage;
     private String mNewsSource;
     private String mNewsDay;
-
     private String mNewslink;
     private String mNewsId;
     private String mNewsType;
     private String mNewsVideo;
-
+    private String mNewsData1;
+    private String mNewsData2;
+    private String mNewsData3;
     public NewsBook() {
 
     }
+    public String getmNewsData1() {
+        return mNewsData1;
+    }
 
+    public void setmNewsData1(String mNewsData1) {
+        this.mNewsData1 = mNewsData1;
+    }
+
+    public String getmNewsData2() {
+        return mNewsData2;
+    }
+
+    public void setmNewsData2(String mNewsData2) {
+        this.mNewsData2 = mNewsData2;
+    }
+
+    public String getmNewsData3() {
+        return mNewsData3;
+    }
+
+    public void setmNewsData3(String mNewsData3) {
+        this.mNewsData3 = mNewsData3;
+    }
 
     public int getId() {
         return id;

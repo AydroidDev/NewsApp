@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.R;
 
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.fragment.app.Fragment;
 
 public class FragmentReview extends Fragment {
@@ -34,7 +35,9 @@ public class FragmentReview extends Fragment {
         TextView mReviewRating=itemView.findViewById(R.id.reviewrating);
         Button mReviewLink = itemView.findViewById(R.id.reviewlink);
 
+        assert getArguments() != null;
         NewsModel model =(NewsModel)getArguments().getSerializable("model");
+        assert model != null;
         String rev_url=model.getmNewslink();
         Glide.with(requireActivity()).load(model.getmNewsImage()).into(mReviewImage);
         mReviewHead.setText(model.getmNewsHead());
@@ -43,8 +46,16 @@ public class FragmentReview extends Fragment {
         mReviewLink.setText(model.getmNewsSource());
 
         mReviewLink.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(rev_url));
-            startActivity(browserIntent);
+            if(model.getmNewsData1().equals("1")) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(rev_url));
+                startActivity(browserIntent);
+            }
+            else{
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                builder.setToolbarColor(24);
+                customTabsIntent.launchUrl(requireContext(), Uri.parse(rev_url));
+            }
         });
         return itemView;
     }

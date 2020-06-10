@@ -82,7 +82,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public interface bookmarkListenerAll{
-        void bookmarkAllAll(int position);
+        void actionBarViewAll();
     }
     public void setbookmarkListenerAll(bookmarkListenerAll listener){
         mBookmarkListenerAll = listener;
@@ -286,7 +286,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBookmarkButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mBookmarkListenerAll.bookmarkAllAll(position);
+                    mBookmarkListenerAll.actionBarViewAll();
 
                 }
             });
@@ -350,7 +350,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBookmarkButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mBookmarkListenerAll.bookmarkAllAll(position);
+                    mBookmarkListenerAll.actionBarViewAll();
 
                 }
             });
@@ -416,7 +416,7 @@ public class AllNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBookmarkButton.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mBookmarkListenerAll.bookmarkAllAll(position);
+                    mBookmarkListenerAll.actionBarViewAll();
 
                 }
             });

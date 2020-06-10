@@ -26,6 +26,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String NEWS_ID = "newsid";
     private static final String NEWS_TYPE ="newstype";
     private static final String NEWS_VIDEO = "newsvideo";
+    private static final String NEWS_DATA1 = "newsdata1";
+    private static final String NEWS_DATA2 = "newsdata2";
+    private static final String NEWS_DATA3 = "newsdata3";
 
 
     public DatabaseHandler(Context context) {
@@ -39,7 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_NEWS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + NEWS_HEAD + " TEXT,"
                 + NEWS_DESC + " TEXT," + NEWS_IMAGE + " TEXT,"+ NEWS_SOURCE + " TEXT," + NEWS_DAY + " TEXT," + NEWS_LINK + " TEXT" +
-                "," + NEWS_ID + " TEXT," + NEWS_TYPE +" TEXT," + NEWS_VIDEO +" TEXT)";
+                "," + NEWS_ID + " TEXT," + NEWS_TYPE +" TEXT," + NEWS_VIDEO +" TEXT," + NEWS_DATA1 + "TEXT, " + NEWS_DATA2 + "TEXT," + NEWS_DATA3 + "TEXT)";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -67,6 +70,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(NEWS_ID, contact.getmNewsId());
         values.put(NEWS_TYPE, contact.getmNewsType());
         values.put(NEWS_VIDEO, contact.getmNewsVideo());
+        values.put(NEWS_DATA1, contact.getmNewsData1());
+        values.put(NEWS_DATA2, contact.getmNewsData2());
+        values.put(NEWS_DATA3, contact.getmNewsData3());
 
 
         // Inserting Row
@@ -80,16 +86,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_NEWS, new String[] { KEY_ID,
-                        NEWS_HEAD, NEWS_DESC, NEWS_IMAGE, NEWS_SOURCE, NEWS_DAY, NEWS_LINK, NEWS_ID,NEWS_TYPE, NEWS_VIDEO
+                        NEWS_HEAD, NEWS_DESC, NEWS_IMAGE, NEWS_SOURCE, NEWS_DAY, NEWS_LINK, NEWS_ID,NEWS_TYPE, NEWS_VIDEO,NEWS_DATA1,NEWS_DATA2,NEWS_DATA3
                 }, KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         assert cursor != null;
-        NewsBook contact = new NewsBook();
         // return contact
-        return contact;
+        return new NewsBook();
     }
 
     // code to get all contacts in a list view
@@ -116,6 +121,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.setmNewsId(cursor.getString(7));
                 contact.setmNewsType(cursor.getString(8));
                 contact.setmNewsVideo(cursor.getString(9));
+                contact.setmNewsData1(cursor.getString(10));
+                contact.setmNewsData2(cursor.getString(11));
+                contact.setmNewsData3(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -139,6 +147,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(NEWS_ID, contact.getmNewsId());
         values.put(NEWS_TYPE, contact.getmNewsType());
         values.put(NEWS_VIDEO, contact.getmNewsVideo());
+        values.put(NEWS_DATA1, contact.getmNewsVideo());
+        values.put(NEWS_DATA2, contact.getmNewsVideo());
+        values.put(NEWS_DATA3, contact.getmNewsVideo());
 
         // updating row
         return db.update(TABLE_NEWS, values, KEY_ID + " = ?", new String[] { String.valueOf(contact.getId()) });

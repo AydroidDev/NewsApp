@@ -324,50 +324,7 @@ public class AllNewsActivity extends AppCompatActivity implements AllNewsAdapter
             Log.e("GREC", e.getMessage(), e);
         }
     }
-    public void bookmarkAllAll(int position){
-        AllNewsModel clickeditem = (AllNewsModel) mNewsList.get(position);
-        if(clickeditem.getmNewsType().equals("1")){
-            final Button buttonNews = findViewById(R.id.bookmark_button);
-            buttonNews.setBackgroundResource(R.drawable.bookmark_button_clicked);
-        }
-        else if(clickeditem.getmNewsType().equals("5")) {
-            final Button buttonVideo = findViewById(R.id.video_bookmark_button);
-            buttonVideo.setBackgroundResource(R.drawable.bookmark_button_clicked);
 
-        }
-        DatabaseHandler db = new DatabaseHandler(this);
-
-        String fieldValue =String.valueOf(clickeditem.getmNewsId());
-        String countQuery = "SELECT  * FROM " + TABLE_NEWS + " where " + NEWS_ID +  " = " + fieldValue;
-        SQLiteDatabase dbs = db.getReadableDatabase();
-        SQLiteDatabase dbsw = db.getWritableDatabase();
-        Cursor cursor = dbs.rawQuery(countQuery, null);
-        int recount = cursor.getCount();
-
-        if(recount <= 0){
-            db.addContact(new NewsBook(0,clickeditem.getmNewsHead(),clickeditem.getmNewsDesc(),
-                    clickeditem.getmNewsImage(),clickeditem.getmNewsSource(),clickeditem.getmNewsDay(),
-                    clickeditem.getmNewslink(),clickeditem.getmNewsId(),
-                    clickeditem.getmNewsType(),clickeditem.getmNewsVideo()));
-            Toast.makeText(this,"News Saved", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            if(clickeditem.getmNewsType().equals("1")){
-                final Button buttonNews = findViewById(R.id.bookmark_button);
-                buttonNews.setBackgroundResource(R.drawable.bookmark_button);
-            }
-            else if(clickeditem.getmNewsType().equals("5")) {
-                final Button buttonVideo = findViewById(R.id.video_bookmark_button);
-                buttonVideo.setBackgroundResource(R.drawable.bookmark_button);
-
-            }
-            dbsw.delete(TABLE_NEWS, NEWS_ID + " = ?",
-                    new String[] { String.valueOf(fieldValue) });
-            Toast.makeText(this,"News Removed", Toast.LENGTH_SHORT).show();
-        }
-
-        cursor.close();
-    }
     public void actionBarViewAll(){
 
         ActionBar actionBar = Objects.requireNonNull(this).getSupportActionBar();

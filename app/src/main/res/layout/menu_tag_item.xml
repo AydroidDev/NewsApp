@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button android:id="@+id/tag_button"
+    android:layout_width="wrap_content"
+    android:layout_height="35dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:layout_marginEnd="10dp"
+    android:textColor="#f4f5fb"
+    android:layout_marginBottom="10dp"
+    android:textSize="13sp"
+    android:textAllCaps="false"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/menu_small_card_grey"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
