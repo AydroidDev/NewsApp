@@ -6,6 +6,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.vaankdeals.newsapp.Model.NewsModel;
 import com.vaankdeals.newsapp.ViewTypes.FragmentCard;
 import com.vaankdeals.newsapp.ViewTypes.FragmentCustomAd;
+import com.vaankdeals.newsapp.ViewTypes.FragmentDeal;
 import com.vaankdeals.newsapp.ViewTypes.FragmentNewsMain;
 import com.vaankdeals.newsapp.ViewTypes.FragmentNewsYt;
 import com.vaankdeals.newsapp.ViewTypes.FragmentProdTag;
@@ -15,7 +16,6 @@ import com.vaankdeals.newsapp.ViewTypes.FragmentWeb;
 import com.vaankdeals.newsapp.ViewTypes.FragmentYtFull;
 import com.vaankdeals.newsapp.ViewTypes.NativeFragment;
 
-import java.util.HashMap;
 import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -103,6 +103,12 @@ public class PagerAdapter extends FragmentStateAdapter {
                     bun_prod.putInt("yt_position",position);
                     fragmentProdTag.setArguments(bun_prod);
                     return fragmentProdTag;
+                case "11":
+                    FragmentDeal fragmentDeal = new FragmentDeal();
+                    Bundle bun_deal=new Bundle();
+                    bun_deal.putSerializable("model",newsModel);
+                    fragmentDeal.setArguments(bun_deal);
+                    return fragmentDeal;
                 default:
                     return null;
             }

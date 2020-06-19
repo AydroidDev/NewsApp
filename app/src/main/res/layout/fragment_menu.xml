@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:grid="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#10121f">
+    android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#10121f">
    <RelativeLayout
        android:layout_width="match_parent"
        android:background="@null"
@@ -21,10 +23,7 @@
 
    </RelativeLayout>
 
-<ScrollView
-    android:scrollbars="none"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,9 +49,20 @@
         android:textColor="#fff"
         android:layout_marginStart="18dp"/>
 
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:id="@+id/tag_progress"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="60dp"
+            android:indeterminateDrawable="@drawable/progress_shape"
+            />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_menu"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp"
@@ -68,20 +78,20 @@
             app:columnCount="2">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/saved_cat"
+                android:id="@+id/news_cat"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal"
                 android:gravity="center"
-                android:tag="tech"
+                android:tag="news"
                 app:cardCornerRadius="10dp"
                 android:layout_marginEnd="5dp"
-                app:cardBackgroundColor="#F59B22">
+                app:cardBackgroundColor="#F137A6">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tech"
+                    android:text="News"
                     android:textSize="18sp"
                     android:fontFamily="@font/prox_bold"
                     android:textColor="#fff"
@@ -90,28 +100,29 @@
                     />
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="-3dp"
-                    android:src="@drawable/tech_logo"
+                    android:layout_marginBottom="-4dp"
+                    android:src="@drawable/news_logo"
                     />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/trending_cat"
+                android:id="@+id/videos_cat"
                 android:layout_width="0dp"
                 android:layout_marginStart="5dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal"
                 android:gravity="center"
-                android:tag="sports"
+                android:tag="videos"
                 app:cardCornerRadius="10dp"
-                app:cardBackgroundColor="#F137A6">
+
+                app:cardBackgroundColor="#15E088">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sports"
+                    android:text="Videos"
                     android:textSize="18sp"
                     android:fontFamily="@font/prox_bold"
                     android:textColor="#fff"
@@ -122,27 +133,87 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:layout_marginBottom="-3dp"
-                android:src="@drawable/sports_logo"
+                android:layout_marginBottom="-4dp"
+                android:src="@drawable/video_logo"
                 />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/games_cat"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 app:layout_columnWeight="1"
                 app:layout_gravity="fill_horizontal"
                 android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:tag="politics"
+                android:layout_marginTop="15dp"
+                android:tag="games"
+                app:cardCornerRadius="10dp"
+                android:layout_marginEnd="5dp"
+                app:cardBackgroundColor="#AB00FF">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Games"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/prox_bold"
+                    android:textColor="#fff"
+                    android:layout_gravity="start|top"
+                    android:layout_margin="10dp"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginBottom="-4dp"
+                    android:src="@drawable/game_logo"
+                    />
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/deals_cat"
+                android:layout_width="0dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="5dp"
+                android:layout_height="120dp"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal"
+                android:gravity="center"
+                android:tag="deals"
+                app:cardCornerRadius="10dp"
+                app:cardBackgroundColor="#FFDE00">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deals"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/prox_bold"
+                    android:textColor="#fff"
+                    android:layout_gravity="start|top"
+                    android:layout_margin="10dp"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginBottom="-4dp"
+                    android:src="@drawable/deals_cat"
+                    />
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/saved_cat"
+                android:layout_width="0dp"
+                android:layout_marginTop="15dp"
+                android:layout_height="120dp"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal"
+                android:gravity="center"
+                android:tag="saved"
                 app:cardCornerRadius="10dp"
                 android:layout_marginEnd="5dp"
                 app:cardBackgroundColor="#FF4632">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Politics"
+                    android:text="Saved"
                     android:textSize="18sp"
                     android:fontFamily="@font/prox_bold"
                     android:textColor="#fff"
@@ -153,102 +224,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="-3dp"
-                    android:src="@drawable/politics_logo"
+                    android:layout_marginBottom="-4dp"
+                    android:src="@drawable/saved_logo"
                     />
             </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/entertainment"
-                android:layout_width="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1"
-                app:layout_gravity="fill_horizontal"
-                android:gravity="center"
-                android:tag="entertainment"
-                app:cardCornerRadius="10dp"
-                app:cardBackgroundColor="#15E088">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Entertainment"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/prox_bold"
-                    android:textColor="#fff"
-                    android:layout_gravity="start|top"
-                    android:layout_margin="10dp"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="-3dp"
-                    android:src="@drawable/entertainment_logo"
-                    />
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/business"
-                android:layout_width="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1"
-                app:layout_gravity="fill_horizontal"
-                android:gravity="center"
-                android:tag="business"
-                app:cardCornerRadius="10dp"
-                android:layout_marginEnd="5dp"
-                app:cardBackgroundColor="#F9C364">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Business"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/prox_bold"
-                    android:textColor="#fff"
-                    android:layout_gravity="start|top"
-                    android:layout_margin="10dp"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="-3dp"
-                    android:src="@drawable/business_logo"
-                    />
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/international"
-                android:layout_width="0dp"
-                android:layout_marginStart="5dp"
-                android:layout_height="wrap_content"
-                app:layout_columnWeight="1"
-                android:layout_marginTop="10dp"
-                app:layout_gravity="fill_horizontal"
-                android:gravity="center"
-                android:tag="international"
-                app:cardCornerRadius="10dp"
-                app:cardBackgroundColor="#F137A6">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="International"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/prox_bold"
-                    android:textColor="#fff"
-                    android:layout_gravity="start|top"
-                    android:layout_margin="10dp"
-                    />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginBottom="-3dp"
-                    android:src="@drawable/international_logo"
-                    />
-            </androidx.cardview.widget.CardView>
+
         </androidx.gridlayout.widget.GridLayout>
 
 </LinearLayout>
-</ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+

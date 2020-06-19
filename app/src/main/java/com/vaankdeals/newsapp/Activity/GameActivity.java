@@ -1,6 +1,7 @@
 package com.vaankdeals.newsapp.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,7 +36,7 @@ public class GameActivity extends AppCompatActivity implements GameAdapter.gameL
     ArrayList<GameModel> GameList = new ArrayList<>();
     RequestQueue mRequestQueue;
     GameAdapter gameAdapter;
-    ProgressBar progressBar;
+    GridLayout gamePlaceHolder;
     RecyclerView recyclerView;
     ImageView imageView1;
     ImageView imageView2;
@@ -50,10 +50,9 @@ public class GameActivity extends AppCompatActivity implements GameAdapter.gameL
 
         mRequestQueue = Volley.newRequestQueue(this);
         recyclerView=findViewById(R.id.recycler_view);
-        progressBar=findViewById(R.id.progress_game);
-
+        gamePlaceHolder=findViewById(R.id.game_placeholder);
         Slidr.attach(this);
-        layAll =findViewById(R.id.layAll);
+        layAll =findViewById(R.id.game_main);
         imageContainer=findViewById(R.id.imageContainer);
         imageView1=findViewById(R.id.gridimage1);
         imageView2=findViewById(R.id.gridimage2);
@@ -132,7 +131,7 @@ private void recentItems(){
                             GameList.add(new GameModel(game_url,game_image));
                         }
                         // Just call notifyDataSetChanged here
-                        progressBar.setVisibility(View.GONE);
+                        gamePlaceHolder.setVisibility(View.GONE);
                         layAll.setVisibility(View.VISIBLE);
                         gameAdapter.notifyDataSetChanged();
                         sliderItem();

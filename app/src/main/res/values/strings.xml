@@ -6,7 +6,10 @@
     <string name="server_website_temp">https://api.npoint.io/364bb20b537e1cf73d90</string>
     <string name="server_website">http://filmapp.000webhostapp.com/newsapp/json_news_sel.php</string>
     <string name="server_website_game">http://filmapp.000webhostapp.com/newsapp/json_game.php</string>
+    <string name="server_website_video">http://filmapp.000webhostapp.com/newsapp/json_video.php</string>
     <string name="server_website_all">http://filmapp.000webhostapp.com/newsapp/json_news_all.php</string>
+    <string name="server_website_single">http://filmapp.000webhostapp.com/newsapp/json_news_single.php</string>
+
     <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
     <string name="ad_unit_id_news_main">ca-app-pub-3940256099942544/2247696110</string>
     <string name="no_internet">"  No Internet ! Please Connect and Refresh." </string>

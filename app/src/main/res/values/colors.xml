@@ -7,6 +7,7 @@
     <color name="buttonFocussed">#ebebeb</color>
     <color name="buttonClicked">#fafafa</color>
 
+    <item name="placeholder" type="color">#2a2e3e</item>
     <item name="blue" type="color">#52A68F</item>
     <item name="purple" type="color">#F3CDD3</item>
     <item name="green" type="color">#FEC864</item>

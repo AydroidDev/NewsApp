@@ -6,16 +6,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activity.GameActivity"
-    android:background="#101010">
+    android:background="#10121f">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progress_game"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="300dp"
-        android:indeterminateDrawable="@drawable/progress_shape"
-        />
+
 <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,35 +18,118 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:background="#101010">
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp">
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:src="@drawable/game_place"
-        android:id="@+id/sliderImage"
-        />
-       <Button
-           android:id="@+id/sliderButton"
-           android:layout_width="120dp"
-           android:layout_height="40dp"
-           android:text="Play Now"
-           android:textColor="#fff"
-           android:textStyle="bold"
-           android:layout_gravity="bottom|right"
-           android:layout_marginEnd="40dp"
-           android:layout_marginBottom="50dp"
-           android:background="#FF449DEF"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/gradient_bottom_black_slider" />
-    </FrameLayout>
+        android:background="#10121f">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="320dp">
+            <ImageView
+                android:id="@+id/sliderImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/game_place"
+                android:scaleType="centerCrop"
+                />
+            <View
+                android:id="@+id/yt_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/gradient_bottom_grey_slider" />
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/video_menu_main_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dunkirk"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/prox_semi_bold"
+                    android:textColor="#fff"/>
+                <TextView
+                    android:id="@+id/video_menu_main_desc"
+                    android:layout_width="250dp"
+
+                    android:layout_height="wrap_content"
+                    android:text="Watch this beatifuly crafted war film directed by christophet nolan."
+                    android:textSize="13sp"
+                    android:fontFamily="@font/prox_light"
+                    android:textColor="#fff"/>
+                <Button
+                    android:id="@+id/sliderButton"
+                    android:layout_width="80dp"
+                    android:layout_height="28dp"
+                    android:text="Watch Now"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/prox_bold"
+                    android:textColor="#fff"
+                    android:background="#f61434"
+                    app:icon="@drawable/ic_arrow_upward_black"
+                    app:iconGravity="start"
+                    app:iconTint="#fff"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </FrameLayout>
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/game_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:columnCount="2">
+
+        <ImageView
+            android:src="@drawable/game_placeholder"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill_horizontal"
+            android:gravity="center"
+
+            android:layout_marginEnd="10dp"/>
+            <ImageView
+                android:src="@drawable/game_placeholder"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal"
+                android:gravity="center"
+                android:layout_marginEnd="5dp"/>
+            <ImageView
+                android:src="@drawable/game_placeholder"
+                android:layout_width="0dp"
+                android:layout_marginTop="5dp"
+                android:layout_height="120dp"
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal"
+                android:gravity="center"
+                android:layout_marginEnd="10dp"/>
+            <ImageView
+                android:src="@drawable/game_placeholder"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="5dp"
+
+                app:layout_columnWeight="1"
+                app:layout_gravity="fill_horizontal"
+                android:gravity="center"
+                android:layout_marginEnd="5dp"/>
+
+</androidx.gridlayout.widget.GridLayout>
+        <LinearLayout
+            android:id="@+id/game_main"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,5 +189,6 @@
         android:id="@+id/recycler_view"
         />
 </LinearLayout>
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>
 </LinearLayout>

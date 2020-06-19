@@ -8,10 +8,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 
 import com.google.android.material.tabs.TabLayout;
+import com.karumi.dexter.Dexter;
 import com.vaankdeals.newsapp.Fragment.MenuFragment;
 import com.vaankdeals.newsapp.Fragment.NewsFragment;
 import com.vaankdeals.newsapp.R;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         viewPagerMain = findViewById(R.id.viewTab);
 

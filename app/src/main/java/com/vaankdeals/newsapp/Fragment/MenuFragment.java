@@ -25,6 +25,7 @@ import com.google.android.flexbox.JustifyContent;
 import com.vaankdeals.newsapp.Activity.AllNewsActivity;
 import com.vaankdeals.newsapp.Activity.GameActivity;
 import com.vaankdeals.newsapp.Activity.SavedActivity;
+import com.vaankdeals.newsapp.Activity.VideoMenuActivity;
 import com.vaankdeals.newsapp.Adapter.MenuTagAdapter;
 import com.vaankdeals.newsapp.Class.DatabaseHandler;
 import com.vaankdeals.newsapp.R;
@@ -48,6 +49,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener,MenuT
     private ArrayList<String> TagList = new ArrayList<>();
     private RequestQueue mRequestQueue;
     private MenuTagAdapter menuTagAdapter;
+    private ProgressBar tagProgress;
+    private RecyclerView tagRecyclerView;
 
     public MenuFragment() {
         // Required empty public constructor
@@ -61,8 +64,9 @@ public class MenuFragment extends Fragment implements View.OnClickListener,MenuT
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
         mRequestQueue = Volley.newRequestQueue(requireActivity());
-        RecyclerView tagRecyclerView = rootView.findViewById(R.id.recycler_view_menu);
+        tagRecyclerView = rootView.findViewById(R.id.recycler_view_menu);
 
+        tagProgress=rootView.findViewById(R.id.tag_progress);
         menuTagAdapter = new MenuTagAdapter(requireActivity(),TagList);
         menuTagAdapter.setmTagClickListener(this);
 
@@ -74,12 +78,10 @@ public class MenuFragment extends Fragment implements View.OnClickListener,MenuT
         parseTag();
 
         ImageView game_banner=rootView.findViewById(R.id.banner_game);
-        CardView trending = rootView.findViewById(R.id.trending_cat);
-        CardView games = rootView.findViewById(R.id.games_cat);
-        CardView business = rootView.findViewById(R.id.business);
-
-        CardView entertainment = rootView.findViewById(R.id.entertainment);
-        CardView international = rootView.findViewById(R.id.international);
+        CardView news_cat = rootView.findViewById(R.id.news_cat);
+        CardView games_cat = rootView.findViewById(R.id.games_cat);
+        CardView deals_cat = rootView.findViewById(R.id.deals_cat);
+        CardView videos_cat = rootView.findViewById(R.id.videos_cat);
 
 
         new Boom(game_banner);
@@ -88,18 +90,22 @@ public class MenuFragment extends Fragment implements View.OnClickListener,MenuT
             startActivity(gameIntent);
         });
 
-        games.setOnClickListener(v -> {
+        games_cat.setOnClickListener(v -> {
             Intent gameIntent = new Intent(getContext(), GameActivity.class);
             startActivity(gameIntent);
         });
 
-        business.setOnClickListener(this);
-        entertainment.setOnClickListener(this);
-        international.setOnClickListener(this);
+        news_cat.setOnClickListener(this);
+        deals_cat.setOnClickListener(this);
 
-        CardView saved = rootView.findViewById(R.id.saved_cat);
 
-        saved.setOnClickListener(v -> {
+        videos_cat.setOnClickListener(v -> {
+            Intent videoIntent= new Intent(getContext(), VideoMenuActivity.class);
+            startActivity(videoIntent);
+        });
+        CardView saved_cat = rootView.findViewById(R.id.saved_cat);
+
+        saved_cat.setOnClickListener(v -> {
             DatabaseHandler db = new DatabaseHandler(getContext());
             String countQuery = "SELECT  * FROM " + TABLE_NEWS;
             SQLiteDatabase dbsVideo = db.getReadableDatabase();
@@ -135,6 +141,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener,MenuT
                         // Just call notifyDataSetChanged here
 
                         menuTagAdapter.notifyDataSetChanged();
+                        tagRecyclerView.setVisibility(View.VISIBLE);
+                        tagProgress.setVisibility(View.GONE);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
